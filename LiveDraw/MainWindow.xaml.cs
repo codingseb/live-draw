@@ -677,9 +677,9 @@ namespace AntFu7.LiveDraw
             try
             {
                 System.Windows.Forms.Screen currentScreen = GetCurrentScreen();
+                Palette.Opacity = 0;
                 var s = SaveDialog("ImageExportWithBackground_" + GenerateFileName(".png"), ".png", "Portable Network Graphics (*png)|*png");
                 if (s == Stream.Null) return;
-                Palette.Opacity = 0;
                 Palette.Dispatcher.Invoke(DispatcherPriority.Render, (NoArgDelegate)delegate { });
                 Thread.Sleep(100);
                 var fromHwnd = Graphics.FromHwnd(IntPtr.Zero);
@@ -688,7 +688,6 @@ namespace AntFu7.LiveDraw
                 var image = new Bitmap(w, h, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
                 Graphics.FromImage(image).CopyFromScreen(currentScreen.Bounds.Left, currentScreen.Bounds.Top, 0, 0, new System.Drawing.Size(w, h), CopyPixelOperation.SourceCopy);
                 image.Save(s, ImageFormat.Png);
-                Palette.Opacity = 1;
                 s.Close();
                 Display("Image Exported");
             }
@@ -696,6 +695,10 @@ namespace AntFu7.LiveDraw
             {
                 MessageBox.Show(ex.ToString());
                 Display("Export failed");
+            }
+            finally
+            {
+                Palette.Opacity = 1;
             }
         }
 
