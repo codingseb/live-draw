@@ -289,7 +289,11 @@
                                     </local:ActivableButton.RenderTransform>
                                     <Path Data="{DynamicResource IconLoad}" Width="14"/>
                                 </local:ActivableButton>
-                                <local:ActivableButton x:Name="ExportButton" ToolTip="Export ink to image with transparent / Right click to export to image with screen below" Click="ExportButton_Click" PreviewMouseRightButtonDown="ExportButton_RightClick" Cursor="Hand">
+                                <local:ActivableButton x:Name="ExportButton" 
+                                                       ToolTip="Export ink to image with transparent / Right click to export to image with screen below" 
+                                                       Click="ExportButton_Click" 
+                                                       PreviewMouseRightButtonDown="ExportButton_RightClick" 
+                                                       Cursor="Hand">
                                     <local:ActivableButton.RenderTransform >
                                         <RotateTransform CenterX="16" CenterY="16" Angle="{Binding MinWidth, ElementName=Palette}"/>
                                     </local:ActivableButton.RenderTransform>

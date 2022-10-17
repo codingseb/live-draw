@@ -674,6 +674,11 @@ namespace AntFu7.LiveDraw
         private delegate void NoArgDelegate();
         private void ExportButton_RightClick(object sender, MouseButtonEventArgs e)
         {
+            ExportCurrentScreen();
+        }
+
+        private void ExportCurrentScreen()
+        {
             if (MainInkCanvas.Strokes.Count == 0)
             {
                 Display("Nothing to save");
@@ -864,7 +869,10 @@ namespace AntFu7.LiveDraw
                     Redo();
                     break;
                 case Key.E:
-                    EraserFunction();
+                    if(e.KeyboardDevice.Modifiers == ModifierKeys.Control)
+                        ExportCurrentScreen();
+                    else
+                        EraserFunction();
                     break;
                 case Key.B:
                     if (_eraserMode == true)
