@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -40,6 +41,17 @@ namespace AntFu7.LiveDraw
         private static readonly Duration Duration7 = (Duration)Application.Current.Resources["Duration7"];
         private static readonly Duration Duration10 = (Duration)Application.Current.Resources["Duration10"];
 
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        internal static extern bool GetCursorPos(ref Win32Point pt);
+
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct Win32Point
+        {
+            public Int32 X;
+            public Int32 Y;
+        };
+
         /*#region Mouse Throught
 
         private const int WsExTransparent = 0x20;
@@ -68,7 +80,6 @@ namespace AntFu7.LiveDraw
 
         public MainWindow()
         {
-
             if (mutex.WaitOne(TimeSpan.Zero, true))
             {
                 _history = new Stack<StrokesHistoryNode>();
@@ -77,8 +88,9 @@ namespace AntFu7.LiveDraw
                     Directory.CreateDirectory("Save");
 
                 InitializeComponent();
+                InitPositioning();
                 SetColor(DefaultColorPicker);
-                SetEnable(false);
+                SetEnable(true);
                 SetTopMost(true);
                 SetDetailPanel(true);
                 SetBrushSize(_brushSizes[_brushIndex]);
@@ -90,12 +102,35 @@ namespace AntFu7.LiveDraw
                 MainInkCanvas.MouseMove += MakeLine;
                 MainInkCanvas.MouseWheel += BrushSize;
                 //RightDocking();
-
             }
             else
             {
                 Application.Current.Shutdown(0);
             }
+        }
+
+        private System.Windows.Forms.Screen GetCurrentScreen()
+        {
+            Win32Point mousePos = new Win32Point();
+
+            GetCursorPos(ref mousePos);
+
+            return System.Windows.Forms.Screen.AllScreens.First(s => s.Bounds.Contains(mousePos.X, mousePos.Y));
+        }
+
+        private void InitPositioning()
+        {
+            System.Windows.Forms.Screen currentScreen = GetCurrentScreen();
+
+            Left = System.Windows.Forms.Screen.AllScreens.Min(s => s.Bounds.Left);
+            Top = System.Windows.Forms.Screen.AllScreens.Min(s => s.Bounds.Top);
+            Width = System.Windows.Forms.Screen.AllScreens.Max(s => s.Bounds.Right) - System.Windows.Forms.Screen.AllScreens.Min(s => s.Bounds.Left);
+            Height= System.Windows.Forms.Screen.AllScreens.Max(s => s.Bounds.Bottom) - System.Windows.Forms.Screen.AllScreens.Min(s => s.Bounds.Top);
+
+            
+
+            Canvas.SetLeft(Palette, Math.Abs(Left - currentScreen.Bounds.Left) + 15);
+            Canvas.SetTop(Palette, Math.Abs(Top - currentScreen.Bounds.Top) + 30);
         }
 
         private void Exit(object sender, EventArgs e)
@@ -641,16 +676,17 @@ namespace AntFu7.LiveDraw
             }
             try
             {
+                System.Windows.Forms.Screen currentScreen = GetCurrentScreen();
                 var s = SaveDialog("ImageExportWithBackground_" + GenerateFileName(".png"), ".png", "Portable Network Graphics (*png)|*png");
                 if (s == Stream.Null) return;
                 Palette.Opacity = 0;
                 Palette.Dispatcher.Invoke(DispatcherPriority.Render, (NoArgDelegate)delegate { });
                 Thread.Sleep(100);
                 var fromHwnd = Graphics.FromHwnd(IntPtr.Zero);
-                var w = (int)(SystemParameters.PrimaryScreenWidth * fromHwnd.DpiX / 96.0);
-                var h = (int)(SystemParameters.PrimaryScreenHeight * fromHwnd.DpiY / 96.0);
+                var w = (int)(currentScreen.Bounds.Width * fromHwnd.DpiX / 96.0);
+                var h = (int)(currentScreen.Bounds.Height * fromHwnd.DpiY / 96.0);
                 var image = new Bitmap(w, h, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-                Graphics.FromImage(image).CopyFromScreen(0, 0, 0, 0, new System.Drawing.Size(w, h), CopyPixelOperation.SourceCopy);
+                Graphics.FromImage(image).CopyFromScreen(currentScreen.Bounds.Left, currentScreen.Bounds.Top, 0, 0, new System.Drawing.Size(w, h), CopyPixelOperation.SourceCopy);
                 image.Save(s, ImageFormat.Png);
                 Palette.Opacity = 1;
                 s.Close();
