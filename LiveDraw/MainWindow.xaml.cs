@@ -135,6 +135,11 @@ namespace AntFu7.LiveDraw
 
         private void Exit(object sender, EventArgs e)
         {
+            SaveAndExit();
+        }
+
+        private void SaveAndExit()
+        {
             if (IsUnsaved())
                 QuickSave("ExitingAutoSave_");
 
@@ -870,6 +875,12 @@ namespace AntFu7.LiveDraw
                     if (_eraserMode == true)
                         SetEraserMode(false);
                     LineMode(true);
+                    break;
+                case Key.H:
+                    SetInkVisibility(!_inkVisibility);
+                    break;
+                case Key.Escape:
+                    SaveAndExit();
                     break;
 
                 /*
