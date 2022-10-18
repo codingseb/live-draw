@@ -40,8 +40,6 @@ namespace AntFu7.LiveDraw
         private static readonly Duration Duration7 = (Duration)Application.Current.Resources["Duration7"];
         private static readonly Duration Duration10 = (Duration)Application.Current.Resources["Duration10"];
 
-        private bool _multiScreenMode;
-
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
         internal static extern bool GetCursorPos(ref Win32Point pt);
@@ -92,7 +90,6 @@ namespace AntFu7.LiveDraw
                 InitPositioning();
                 SetColor(DefaultColorPicker);
                 SetEnable(true);
-                SetTopMost(true);
                 SetDetailPanel(true);
                 SetBrushSize(_brushSizes[_brushIndex]);
                 DetailPanel.Opacity = 0;
@@ -123,7 +120,7 @@ namespace AntFu7.LiveDraw
         {
             System.Windows.Forms.Screen currentScreen = GetCurrentScreen();
 
-            if (_multiScreenMode)
+            if (Persistence.Instance.MultiScreen)
             {
                 Left = System.Windows.Forms.Screen.AllScreens.Min(s => s.Bounds.Left);
                 Top = System.Windows.Forms.Screen.AllScreens.Min(s => s.Bounds.Top);
@@ -308,11 +305,7 @@ namespace AntFu7.LiveDraw
             //ColorPickersPanel.BeginAnimation(WidthProperty, new DoubleAnimation((double)Application.Current.Resources[v ? "VerticalModeColorPickersPanel" : "HorizontalModeColorPickersPanel"], Duration3));
             _displayOrientation = v;
         }
-        private void SetTopMost(bool v)
-        {
-            PinButton.IsActived = v;
-            Topmost = v;
-        }
+
         #endregion
 
 
@@ -629,7 +622,7 @@ namespace AntFu7.LiveDraw
         }
         private void PinButton_Click(object sender, RoutedEventArgs e)
         {
-            SetTopMost(!Topmost);
+            Persistence.Instance.Topmost = !Persistence.Instance.Topmost;
         }
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
@@ -663,7 +656,7 @@ namespace AntFu7.LiveDraw
 
         private void ExportInk()
         {
-            if(_multiScreenMode && (Keyboard.Modifiers & ModifierKeys.Shift) != ModifierKeys.Shift)
+            if(Persistence.Instance.MultiScreen && (Keyboard.Modifiers & ModifierKeys.Shift) != ModifierKeys.Shift)
             {
                 ExportScreenInk(GetCurrentScreen());
             }
@@ -1130,7 +1123,7 @@ namespace AntFu7.LiveDraw
 
         private void ScreenSelectionButton_Click(object sender, RoutedEventArgs e)
         {
-            _multiScreenMode = !_multiScreenMode;
+            Persistence.Instance.MultiScreen = !Persistence.Instance.MultiScreen;
             Clear();
             InitPositioning();
         }

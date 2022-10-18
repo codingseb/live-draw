@@ -13,6 +13,7 @@
     WindowStyle="None" 
     Title="LiveDraw Dev" 
     Icon="Rescoures/icon.ico" 
+    Topmost="{Binding Source={x:Static local:Persistence.Instance}, Path=Topmost}"
     PreviewKeyDown="Window_KeyDown">
     <Window.Resources>
         <SolidColorBrush x:Key="PaintingColor1" Color="#FF86E238"/>
@@ -202,6 +203,11 @@
                                         <RotateTransform CenterX="17.5" CenterY="17.5" Angle="{Binding MinWidth, ElementName=Palette}"/>
                                     </local:ColorPicker.RenderTransform>
                                 </local:ColorPicker>
+                                <local:ColorPicker Background="White" Click="ColorPickers_Click">
+                                    <local:ColorPicker.RenderTransform>
+                                        <RotateTransform CenterX="17.5" CenterY="17.5" Angle="{Binding MinWidth, ElementName=Palette}"/>
+                                    </local:ColorPicker.RenderTransform>
+                                </local:ColorPicker>
                                 <local:ColorPicker Background="{StaticResource PaintingColor4}" Click="ColorPickers_Click">
                                     <local:ColorPicker.RenderTransform>
                                         <RotateTransform CenterX="17.5" CenterY="17.5" Angle="{Binding MinWidth, ElementName=Palette}"/>
@@ -271,13 +277,13 @@
                                     </local:ActivableButton.RenderTransform>
                                     <Path Data="{DynamicResource IconTrashBox}" Width="13"/>
                                 </local:ActivableButton>
-                                <local:ActivableButton x:Name="PinButton" ToolTip="Topmost" Click="PinButton_Click" >
+                                <local:ActivableButton x:Name="PinButton" ToolTip="Topmost" Click="PinButton_Click" Cursor="Hand" IsActived="{Binding Topmost, Source={x:Static local:Persistence.Instance}}" >
                                     <local:ActivableButton.RenderTransform >
                                         <RotateTransform CenterX="16" CenterY="16" Angle="{Binding MinWidth, ElementName=Palette}"/>
                                     </local:ActivableButton.RenderTransform>
                                     <Path Data="{DynamicResource IconPin}" Width="13"/>
                                 </local:ActivableButton>
-                                <local:ActivableButton x:Name="ScreenSelectionButton" ToolTip="Mono/Multiple screen(s)" Click="ScreenSelectionButton_Click" Cursor="Hand" >
+                                <local:ActivableButton x:Name="ScreenSelectionButton" ToolTip="Mono/Multiple screen(s)" Click="ScreenSelectionButton_Click" Cursor="Hand" IsActived="{Binding MultiScreen,Source={x:Static local:Persistence.Instance}}" >
                                     <local:ActivableButton.RenderTransform >
                                         <RotateTransform CenterX="16" CenterY="16" Angle="{Binding MinWidth, ElementName=Palette}"/>
                                     </local:ActivableButton.RenderTransform>
