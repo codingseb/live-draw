@@ -646,6 +646,52 @@ namespace AntFu7.LiveDraw
         }
         private void ExportButton_Click(object sender, RoutedEventArgs e)
         {
+            ExportScreenDraw(GetCurrentScreen());
+        }
+
+        private void ExportScreenDraw(System.Windows.Forms.Screen screen)
+        {
+            if (MainInkCanvas.Strokes.Count == 0)
+            {
+                Display("Nothing to save");
+                return;
+            }
+            try
+            {
+                var fromHwnd = Graphics.FromHwnd(IntPtr.Zero);
+                var x = Math.Abs(System.Windows.Forms.Screen.AllScreens.Min(s => s.Bounds.Left) - screen.Bounds.Left);
+                var y = Math.Abs(System.Windows.Forms.Screen.AllScreens.Min(s => s.Bounds.Top) - screen.Bounds.Top);
+
+                var w = (int)(screen.Bounds.Width * fromHwnd.DpiX / 96.0);
+                var h = (int)(screen.Bounds.Height * fromHwnd.DpiY / 96.0);
+
+                var s = SaveDialog("ImageExport_" + GenerateFileName(".png"), ".png",
+                    "Portable Network Graphics (*png)|*png");
+                if (s == Stream.Null) return;
+                var rtb = new RenderTargetBitmap((int)MainInkCanvas.ActualWidth, (int)MainInkCanvas.ActualHeight, 96d,
+                    96d, PixelFormats.Pbgra32);
+                rtb.Render(MainInkCanvas);
+                var encoder = new PngBitmapEncoder();
+                encoder.Frames.Add(BitmapFrame.Create(rtb));
+
+                CroppedBitmap crop = new CroppedBitmap(rtb, new Int32Rect { X =  x, Y = y, Width = w, Height = h });
+                BitmapEncoder cropEncoder = new PngBitmapEncoder();
+                cropEncoder.Frames.Add(BitmapFrame.Create(crop));
+
+                cropEncoder.Save(s);
+
+                s.Close();
+                Display("Image Exported");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+                Display("Export failed");
+            }
+        }
+
+        private void ExportAllScreensDraw()
+        {
             if (MainInkCanvas.Strokes.Count == 0)
             {
                 Display("Nothing to save");
@@ -662,6 +708,7 @@ namespace AntFu7.LiveDraw
                 var encoder = new PngBitmapEncoder();
                 encoder.Frames.Add(BitmapFrame.Create(rtb));
                 encoder.Save(s);
+
                 s.Close();
                 Display("Image Exported");
             }
@@ -671,13 +718,14 @@ namespace AntFu7.LiveDraw
                 Display("Export failed");
             }
         }
+
         private delegate void NoArgDelegate();
         private void ExportButton_RightClick(object sender, MouseButtonEventArgs e)
         {
-            ExportCurrentScreen();
+            ExportFullScreen(GetCurrentScreen());
         }
 
-        private void ExportCurrentScreen()
+        private void ExportFullScreen(System.Windows.Forms.Screen screen)
         {
             if (MainInkCanvas.Strokes.Count == 0)
             {
@@ -686,17 +734,16 @@ namespace AntFu7.LiveDraw
             }
             try
             {
-                System.Windows.Forms.Screen currentScreen = GetCurrentScreen();
                 Palette.Opacity = 0;
                 var s = SaveDialog("ImageExportWithBackground_" + GenerateFileName(".png"), ".png", "Portable Network Graphics (*png)|*png");
                 if (s == Stream.Null) return;
                 Palette.Dispatcher.Invoke(DispatcherPriority.Render, (NoArgDelegate)delegate { });
                 Thread.Sleep(100);
                 var fromHwnd = Graphics.FromHwnd(IntPtr.Zero);
-                var w = (int)(currentScreen.Bounds.Width * fromHwnd.DpiX / 96.0);
-                var h = (int)(currentScreen.Bounds.Height * fromHwnd.DpiY / 96.0);
+                var w = (int)(screen.Bounds.Width * fromHwnd.DpiX / 96.0);
+                var h = (int)(screen.Bounds.Height * fromHwnd.DpiY / 96.0);
                 var image = new Bitmap(w, h, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-                Graphics.FromImage(image).CopyFromScreen(currentScreen.Bounds.Left, currentScreen.Bounds.Top, 0, 0, new System.Drawing.Size(w, h), CopyPixelOperation.SourceCopy);
+                Graphics.FromImage(image).CopyFromScreen(screen.Bounds.Left, screen.Bounds.Top, 0, 0, new System.Drawing.Size(w, h), CopyPixelOperation.SourceCopy);
                 image.Save(s, ImageFormat.Png);
                 s.Close();
                 Display("Image Exported");
@@ -870,7 +917,7 @@ namespace AntFu7.LiveDraw
                     break;
                 case Key.E:
                     if(e.KeyboardDevice.Modifiers == ModifierKeys.Control)
-                        ExportCurrentScreen();
+                        ExportFullScreen(GetCurrentScreen());
                     else
                         EraserFunction();
                     break;
