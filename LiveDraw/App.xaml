@@ -115,7 +115,7 @@
                     </Setter.Value>
                 </Setter>
                 <Style.Triggers>
-                    <Trigger Property="IsMouseOver" Value="True">
+                    <!--<Trigger Property="IsMouseOver" Value="True">
                         <Trigger.EnterActions>
                             <BeginStoryboard>
                                 <Storyboard>
@@ -146,7 +146,7 @@
                                 </Storyboard>
                             </BeginStoryboard>
                         </Trigger.ExitActions>
-                    </Trigger>
+                    </Trigger>-->
                     <Trigger Property="IsActived" Value="True">
                         <Trigger.Setters>
                             <Setter Property="Background" Value="{StaticResource FunctionalButtonActive}" />
