@@ -12,7 +12,8 @@ namespace AntFu7.LiveDraw
     class ActivableButton : Button
     {
         public static readonly DependencyProperty IsActivedProperty = DependencyProperty.Register(
-            "IsActived", typeof(bool), typeof(ActivableButton), new PropertyMetadata(default(bool)));
+            "IsActived", typeof(bool), typeof(ActivableButton), new FrameworkPropertyMetadata(default(bool)) 
+            { AffectsRender = true, DefaultUpdateSourceTrigger = System.Windows.Data.UpdateSourceTrigger.PropertyChanged });
 
         public bool IsActived
         {

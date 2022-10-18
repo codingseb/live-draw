@@ -147,6 +147,11 @@
                             </BeginStoryboard>
                         </Trigger.ExitActions>
                     </Trigger>
+                    <Trigger Property="IsActived" Value="True">
+                        <Trigger.Setters>
+                            <Setter Property="Background" Value="{StaticResource FunctionalButtonActive}" />
+                        </Trigger.Setters>
+                    </Trigger>
                 </Style.Triggers>
             </Style>
 
