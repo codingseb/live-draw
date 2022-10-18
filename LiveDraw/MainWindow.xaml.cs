@@ -20,8 +20,6 @@ using Point = System.Windows.Point;
 
 namespace AntFu7.LiveDraw
 {
-
-
     public partial class MainWindow : Window
     {
         public static int EraseByPoint_Flag = 0;
@@ -646,10 +644,10 @@ namespace AntFu7.LiveDraw
         }
         private void ExportButton_Click(object sender, RoutedEventArgs e)
         {
-            ExportScreenDraw(GetCurrentScreen());
+            ExportScreenInk(GetCurrentScreen());
         }
 
-        private void ExportScreenDraw(System.Windows.Forms.Screen screen)
+        private void ExportScreenInk(System.Windows.Forms.Screen screen)
         {
             if (MainInkCanvas.Strokes.Count == 0)
             {
@@ -690,7 +688,7 @@ namespace AntFu7.LiveDraw
             }
         }
 
-        private void ExportAllScreensDraw()
+        private void ExportAllScreensInk()
         {
             if (MainInkCanvas.Strokes.Count == 0)
             {
@@ -904,6 +902,11 @@ namespace AntFu7.LiveDraw
             {
                 SetEnable(!_enable);
             }
+            else if (e.Key == Key.Escape)
+            {
+                SaveAndExit();
+            }
+
             if (!_enable)
                 return;
 
@@ -917,6 +920,8 @@ namespace AntFu7.LiveDraw
                     break;
                 case Key.E:
                     if(e.KeyboardDevice.Modifiers == ModifierKeys.Control)
+                        ExportScreenInk(GetCurrentScreen());
+                    else if(e.KeyboardDevice.Modifiers == (ModifierKeys.Control | ModifierKeys.Shift))
                         ExportFullScreen(GetCurrentScreen());
                     else
                         EraserFunction();
@@ -934,8 +939,8 @@ namespace AntFu7.LiveDraw
                 case Key.H:
                     SetInkVisibility(!_inkVisibility);
                     break;
-                case Key.Escape:
-                    SaveAndExit();
+                case Key.Delete:
+                    AnimatedClear();
                     break;
 
                 /*
@@ -979,7 +984,6 @@ namespace AntFu7.LiveDraw
         {
             if (_enable)
             {
-
                 _lineMode = l;
                 if (_lineMode)
                 {

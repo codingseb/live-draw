@@ -13,7 +13,7 @@
     WindowStyle="None" 
     Title="LiveDraw Dev" 
     Icon="Rescoures/icon.ico" 
-    KeyDown="Window_KeyDown">
+    PreviewKeyDown="Window_KeyDown">
     <Window.Resources>
         <SolidColorBrush x:Key="PaintingColor1" Color="#FF86E238"/>
         <SolidColorBrush x:Key="PaintingColor2" Color="#FF38E2A8"/>
@@ -236,7 +236,7 @@
                                 <local:ActivableButton x:Name="BrushSwitchButton" Click="BrushSwitchButton_Click" ToolTip="Preview">
                                     <Border x:Name="brushPreview" Width="5" Height="5" Background="#FFD6D6D6" CornerRadius="10"  HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                 </local:ActivableButton>
-                                <local:ActivableButton x:Name="LineButton" ToolTip="Line Mode" Click="LineButton_Click">
+                                <local:ActivableButton x:Name="LineButton" ToolTip="Line Mode (L)" Click="LineButton_Click">
                                     <Path Data="{DynamicResource IconMinimize}" RenderTransformOrigin="0.5,0.5" Height="3" Stretch="Fill" Width="15">
                                         <Path.RenderTransform>
                                             <RotateTransform Angle="-45"/>
@@ -265,7 +265,7 @@
                                     </local:ActivableButton.RenderTransform>
                                     <Path Data="{DynamicResource IconEraser}"/>
                                 </local:ActivableButton>
-                                <local:ActivableButton x:Name="ClearButton" Click="ClearButton_Click" ToolTip="Clear screen" >
+                                <local:ActivableButton x:Name="ClearButton" Click="ClearButton_Click" ToolTip="Clear screen (Delete)" >
                                     <local:ActivableButton.RenderTransform >
                                         <RotateTransform CenterX="16" CenterY="16" Angle="{Binding MinWidth, ElementName=Palette}"/>
                                     </local:ActivableButton.RenderTransform>
@@ -290,7 +290,7 @@
                                     <Path Data="{DynamicResource IconLoad}" Width="14"/>
                                 </local:ActivableButton>
                                 <local:ActivableButton x:Name="ExportButton" 
-                                                       ToolTip="Export ink to image with transparent / Right click to export to image with screen below" 
+                                                       ToolTip="Export ink of the current screen (Ctrl+E)/ Right click to full current screen Ink+Background (Ctrl+Shift+E)" 
                                                        Click="ExportButton_Click" 
                                                        PreviewMouseRightButtonDown="ExportButton_RightClick" 
                                                        Cursor="Hand">
@@ -299,13 +299,13 @@
                                     </local:ActivableButton.RenderTransform>
                                     <Path Data="{DynamicResource IconExport}"/>
                                 </local:ActivableButton>
-                                <local:ActivableButton x:Name="HideButton"  ToolTip="Hide ink" Click="HideButton_Click" >
+                                <local:ActivableButton x:Name="HideButton"  ToolTip="Hide ink (H)" Click="HideButton_Click" >
                                     <local:ActivableButton.RenderTransform >
                                         <RotateTransform CenterX="16" CenterY="16" Angle="{Binding MinWidth, ElementName=Palette}"/>
                                     </local:ActivableButton.RenderTransform>
                                     <Path Data="{DynamicResource IconCloseEye}"/>
                                 </local:ActivableButton>
-                                <local:ActivableButton x:Name="EnableButton" Click="EnableButton_Click" ToolTip="Release/Recover the control of drawing">
+                                <local:ActivableButton x:Name="EnableButton" Click="EnableButton_Click" ToolTip="Release/Recover the control of drawing (R)">
                                     <local:ActivableButton.RenderTransform >
                                         <RotateTransform CenterX="16" CenterY="16" Angle="{Binding MinWidth, ElementName=Palette}"/>
                                     </local:ActivableButton.RenderTransform>
