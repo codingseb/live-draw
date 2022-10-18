@@ -214,7 +214,7 @@
                                 </local:ColorPicker>
                             </WrapPanel>
                         </Grid>
-                        <StackPanel x:Name="DetailPanel" Width="{Binding ElementName=ColorPickersPanel,Path=ActualWidth}"  Margin="0,3,0,0">
+                        <StackPanel x:Name="DetailPanel" Width="{Binding ActualWidth, ElementName=ColorPickersPanel}">
                             <StackPanel.Style>
                                 <Style TargetType="StackPanel">
                                     <Style.Triggers>
@@ -277,6 +277,12 @@
                                     </local:ActivableButton.RenderTransform>
                                     <Path Data="{DynamicResource IconPin}" Width="13"/>
                                 </local:ActivableButton>
+                                <local:ActivableButton x:Name="ScreenSelectionButton" ToolTip="Mono/Multiple screen(s)" Click="ScreenSelectionButton_Click" Cursor="Hand" >
+                                    <local:ActivableButton.RenderTransform >
+                                        <RotateTransform CenterX="16" CenterY="16" Angle="{Binding MinWidth, ElementName=Palette}"/>
+                                    </local:ActivableButton.RenderTransform>
+                                    <Path Data="{DynamicResource IconScreen}" Width="13"/>
+                                </local:ActivableButton>
                                 <local:ActivableButton x:Name="SaveButton" Click="SaveButton_Click" ToolTip="Quick save / Right click to save to file" PreviewMouseRightButtonDown="SaveButton_RightClick">
                                     <local:ActivableButton.RenderTransform >
                                         <RotateTransform CenterX="16" CenterY="16" Angle="{Binding MinWidth, ElementName=Palette}"/>
@@ -290,7 +296,7 @@
                                     <Path Data="{DynamicResource IconLoad}" Width="14"/>
                                 </local:ActivableButton>
                                 <local:ActivableButton x:Name="ExportButton" 
-                                                       ToolTip="Export ink of the current screen (Ctrl+E)/ Right click to full current screen Ink+Background (Ctrl+Shift+E)" 
+                                                       ToolTip="Export ink of the current screen (Alt+E)/ Right click to full current screen Ink+Background (Ctrl+E)&#x0a;Add (Shift) to click for multi screen" 
                                                        Click="ExportButton_Click" 
                                                        PreviewMouseRightButtonDown="ExportButton_RightClick" 
                                                        Cursor="Hand">

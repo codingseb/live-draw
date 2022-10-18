@@ -54,8 +54,8 @@
             <sys:Double x:Key="VerticalModeColorPickersPanel">40</sys:Double>
             <sys:Double x:Key="VerticalModeGrip">70</sys:Double>
 
-            <sys:Double x:Key="HorizontalModeFlowPanel">430</sys:Double>
-            <sys:Double x:Key="HorizontalModeColorPickersPanel">430</sys:Double>
+            <sys:Double x:Key="HorizontalModeFlowPanel">480</sys:Double>
+            <sys:Double x:Key="HorizontalModeColorPickersPanel">480</sys:Double>
             <sys:Double x:Key="HorizontalModeGrip">200</sys:Double>
             
             <ControlTemplate x:Key="SliderHorizontal" TargetType="{x:Type Slider}">

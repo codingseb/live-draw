@@ -30,6 +30,7 @@ namespace AntFu7.LiveDraw
             ERASER = 1,
             ERASERBYPOINT = 2
         }
+
         private static Mutex mutex = new Mutex(true, "LiveDraw");
         private static readonly Duration Duration1 = (Duration)Application.Current.Resources["Duration1"];
         private static readonly Duration Duration2 = (Duration)Application.Current.Resources["Duration2"];
@@ -38,6 +39,8 @@ namespace AntFu7.LiveDraw
         private static readonly Duration Duration5 = (Duration)Application.Current.Resources["Duration5"];
         private static readonly Duration Duration7 = (Duration)Application.Current.Resources["Duration7"];
         private static readonly Duration Duration10 = (Duration)Application.Current.Resources["Duration10"];
+
+        private bool _multiScreenMode;
 
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
@@ -120,15 +123,26 @@ namespace AntFu7.LiveDraw
         {
             System.Windows.Forms.Screen currentScreen = GetCurrentScreen();
 
-            Left = System.Windows.Forms.Screen.AllScreens.Min(s => s.Bounds.Left);
-            Top = System.Windows.Forms.Screen.AllScreens.Min(s => s.Bounds.Top);
-            Width = System.Windows.Forms.Screen.AllScreens.Max(s => s.Bounds.Right) - System.Windows.Forms.Screen.AllScreens.Min(s => s.Bounds.Left);
-            Height= System.Windows.Forms.Screen.AllScreens.Max(s => s.Bounds.Bottom) - System.Windows.Forms.Screen.AllScreens.Min(s => s.Bounds.Top);
+            if (_multiScreenMode)
+            {
+                Left = System.Windows.Forms.Screen.AllScreens.Min(s => s.Bounds.Left);
+                Top = System.Windows.Forms.Screen.AllScreens.Min(s => s.Bounds.Top);
+                Width = System.Windows.Forms.Screen.AllScreens.Max(s => s.Bounds.Right) - System.Windows.Forms.Screen.AllScreens.Min(s => s.Bounds.Left);
+                Height= System.Windows.Forms.Screen.AllScreens.Max(s => s.Bounds.Bottom) - System.Windows.Forms.Screen.AllScreens.Min(s => s.Bounds.Top);
 
-            
+                Canvas.SetLeft(Palette, Math.Abs(Left - currentScreen.Bounds.Left) + 15);
+                Canvas.SetTop(Palette, Math.Abs(Top - currentScreen.Bounds.Top) + 60);
+            }
+            else
+            {
+                Left = currentScreen.Bounds.Left;
+                Top = currentScreen.Bounds.Top;
+                Width = currentScreen.Bounds.Width;
+                Height = currentScreen.Bounds.Height;
 
-            Canvas.SetLeft(Palette, Math.Abs(Left - currentScreen.Bounds.Left) + 15);
-            Canvas.SetTop(Palette, Math.Abs(Top - currentScreen.Bounds.Top) + 30);
+                Canvas.SetLeft(Palette, 15);
+                Canvas.SetTop(Palette, 60);
+            }
         }
 
         private void Exit(object sender, EventArgs e)
@@ -644,7 +658,19 @@ namespace AntFu7.LiveDraw
         }
         private void ExportButton_Click(object sender, RoutedEventArgs e)
         {
-            ExportScreenInk(GetCurrentScreen());
+            ExportInk();
+        }
+
+        private void ExportInk()
+        {
+            if(_multiScreenMode && (Keyboard.Modifiers & ModifierKeys.Shift) != ModifierKeys.Shift)
+            {
+                ExportScreenInk(GetCurrentScreen());
+            }
+            else
+            {
+                ExportAllScreensInk();
+            }
         }
 
         private void ExportScreenInk(System.Windows.Forms.Screen screen)
@@ -720,7 +746,20 @@ namespace AntFu7.LiveDraw
         private delegate void NoArgDelegate();
         private void ExportButton_RightClick(object sender, MouseButtonEventArgs e)
         {
-            ExportFullScreen(GetCurrentScreen());
+            ExportScreen();
+        }
+
+        private void ExportScreen()
+        {
+            if ((Keyboard.Modifiers & ModifierKeys.Shift) == ModifierKeys.Shift)
+            {
+                ExportFullAllScreen();
+            }
+            else
+            {
+                ExportFullScreen(GetCurrentScreen());
+            }
+            
         }
 
         private void ExportFullScreen(System.Windows.Forms.Screen screen)
@@ -742,6 +781,40 @@ namespace AntFu7.LiveDraw
                 var h = (int)(screen.Bounds.Height * fromHwnd.DpiY / 96.0);
                 var image = new Bitmap(w, h, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
                 Graphics.FromImage(image).CopyFromScreen(screen.Bounds.Left, screen.Bounds.Top, 0, 0, new System.Drawing.Size(w, h), CopyPixelOperation.SourceCopy);
+                image.Save(s, ImageFormat.Png);
+                s.Close();
+                Display("Image Exported");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+                Display("Export failed");
+            }
+            finally
+            {
+                Palette.Opacity = 1;
+            }
+        }
+        
+        private void ExportFullAllScreen()
+        {
+            if (MainInkCanvas.Strokes.Count == 0)
+            {
+                Display("Nothing to save");
+                return;
+            }
+            try
+            {
+                Palette.Opacity = 0;
+                var s = SaveDialog("ImageExportWithBackground_" + GenerateFileName(".png"), ".png", "Portable Network Graphics (*png)|*png");
+                if (s == Stream.Null) return;
+                Palette.Dispatcher.Invoke(DispatcherPriority.Render, (NoArgDelegate)delegate { });
+                Thread.Sleep(100);
+                var fromHwnd = Graphics.FromHwnd(IntPtr.Zero);
+                var w = (int)(Width * fromHwnd.DpiX / 96.0);
+                var h = (int)(Height * fromHwnd.DpiY / 96.0);
+                var image = new Bitmap(w, h, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+                Graphics.FromImage(image).CopyFromScreen((int)Left, (int)Top, 0, 0, new System.Drawing.Size(w, h), CopyPixelOperation.SourceCopy);
                 image.Save(s, ImageFormat.Png);
                 s.Close();
                 Display("Image Exported");
@@ -919,9 +992,9 @@ namespace AntFu7.LiveDraw
                     Redo();
                     break;
                 case Key.E:
-                    if(e.KeyboardDevice.Modifiers == ModifierKeys.Control)
-                        ExportScreenInk(GetCurrentScreen());
-                    else if(e.KeyboardDevice.Modifiers == (ModifierKeys.Control | ModifierKeys.Shift))
+                    if (e.KeyboardDevice.Modifiers == ModifierKeys.Control)
+                        ExportInk();
+                    else if (e.KeyboardDevice.Modifiers == (ModifierKeys.Control | ModifierKeys.Shift))
                         ExportFullScreen(GetCurrentScreen());
                     else
                         EraserFunction();
@@ -1054,5 +1127,12 @@ namespace AntFu7.LiveDraw
             _lastStroke = stroke;
         }
         #endregion
+
+        private void ScreenSelectionButton_Click(object sender, RoutedEventArgs e)
+        {
+            _multiScreenMode = !_multiScreenMode;
+            Clear();
+            InitPositioning();
+        }
     }
 }
