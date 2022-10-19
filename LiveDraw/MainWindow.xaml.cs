@@ -15,6 +15,7 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using Screen = System.Windows.Forms.Screen;
 using Brush = System.Windows.Media.Brush;
 using Point = System.Windows.Point;
 
@@ -109,25 +110,25 @@ namespace AntFu7.LiveDraw
             }
         }
 
-        private static System.Windows.Forms.Screen GetCurrentScreen()
+        private static Screen GetCurrentScreen()
         {
             Win32Point mousePos = new Win32Point();
 
             GetCursorPos(ref mousePos);
 
-            return System.Windows.Forms.Screen.AllScreens.First(s => s.Bounds.Contains(mousePos.X, mousePos.Y));
+            return Screen.AllScreens.First(s => s.Bounds.Contains(mousePos.X, mousePos.Y));
         }
 
         private void InitPositioning()
         {
-            System.Windows.Forms.Screen currentScreen = GetCurrentScreen();
+            Screen currentScreen = GetCurrentScreen();
 
             if (Persistence.Instance.MultiScreen)
             {
-                Left = System.Windows.Forms.Screen.AllScreens.Min(s => s.Bounds.Left);
-                Top = System.Windows.Forms.Screen.AllScreens.Min(s => s.Bounds.Top);
-                Width = System.Windows.Forms.Screen.AllScreens.Max(s => s.Bounds.Right) - System.Windows.Forms.Screen.AllScreens.Min(s => s.Bounds.Left);
-                Height= System.Windows.Forms.Screen.AllScreens.Max(s => s.Bounds.Bottom) - System.Windows.Forms.Screen.AllScreens.Min(s => s.Bounds.Top);
+                Left = Screen.AllScreens.Min(s => s.Bounds.Left);
+                Top = Screen.AllScreens.Min(s => s.Bounds.Top);
+                Width = Screen.AllScreens.Max(s => s.Bounds.Right) - Screen.AllScreens.Min(s => s.Bounds.Left);
+                Height= Screen.AllScreens.Max(s => s.Bounds.Bottom) - Screen.AllScreens.Min(s => s.Bounds.Top);
 
                 Canvas.SetLeft(Palette, Math.Abs(Left - currentScreen.Bounds.Left) + Persistence.Instance.PaletteX);
                 Canvas.SetTop(Palette, Math.Abs(Top - currentScreen.Bounds.Top) + Persistence.Instance.PaletteY);
@@ -665,8 +666,8 @@ namespace AntFu7.LiveDraw
             try
             {
                 var fromHwnd = Graphics.FromHwnd(IntPtr.Zero);
-                var x = Math.Abs(System.Windows.Forms.Screen.AllScreens.Min(s => s.Bounds.Left) - screen.Bounds.Left);
-                var y = Math.Abs(System.Windows.Forms.Screen.AllScreens.Min(s => s.Bounds.Top) - screen.Bounds.Top);
+                var x = Math.Abs(Screen.AllScreens.Min(s => s.Bounds.Left) - screen.Bounds.Left);
+                var y = Math.Abs(Screen.AllScreens.Min(s => s.Bounds.Top) - screen.Bounds.Top);
 
                 var w = (int)(screen.Bounds.Width * fromHwnd.DpiX / 96.0);
                 var h = (int)(screen.Bounds.Height * fromHwnd.DpiY / 96.0);
