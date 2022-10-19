@@ -323,7 +323,7 @@
                                     </local:ActivableButton.RenderTransform>
                                     <Path Data="{DynamicResource IconNoAccess}" />
                                 </local:ActivableButton>
-                                <local:ActivableButton x:Name="OrientationButton" Click="OrientationButton_Click" ToolTip="Rotate dock">
+                                <local:ActivableButton x:Name="OrientationButton" Click="OrientationButton_Click" ToolTip="Rotate dock" Cursor="Hand">
                                     <Path Data="{DynamicResource IconMinimize}" RenderTransformOrigin="0.5,0.5">
                                         <Path.RenderTransform>
                                             <RotateTransform Angle="90"/>

@@ -18,6 +18,12 @@ namespace AntFu7.LiveDraw
 
         public bool MultiScreen { get; set; }
 
+        public bool Orientation { get; set; }
+
+        public int PaletteX { get; set; } = -60;
+
+        public int PaletteY { get; set; } = 190;
+
         #region Json singleton
 
         private static readonly string fileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "LiveDraw", "Persist.json");

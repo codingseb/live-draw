@@ -87,11 +87,13 @@ namespace AntFu7.LiveDraw
                     Directory.CreateDirectory("Save");
 
                 InitializeComponent();
+                SetOrientation(Persistence.Instance.Orientation);
                 InitPositioning();
                 SetColor(DefaultColorPicker);
                 SetEnable(true);
                 SetDetailPanel(true);
                 SetBrushSize(_brushSizes[_brushIndex]);
+                
                 DetailPanel.Opacity = 0;
 
                 MainInkCanvas.Strokes.StrokesChanged += StrokesChanged;
@@ -127,8 +129,8 @@ namespace AntFu7.LiveDraw
                 Width = System.Windows.Forms.Screen.AllScreens.Max(s => s.Bounds.Right) - System.Windows.Forms.Screen.AllScreens.Min(s => s.Bounds.Left);
                 Height= System.Windows.Forms.Screen.AllScreens.Max(s => s.Bounds.Bottom) - System.Windows.Forms.Screen.AllScreens.Min(s => s.Bounds.Top);
 
-                Canvas.SetLeft(Palette, Math.Abs(Left - currentScreen.Bounds.Left) + 15);
-                Canvas.SetTop(Palette, Math.Abs(Top - currentScreen.Bounds.Top) + 60);
+                Canvas.SetLeft(Palette, Math.Abs(Left - currentScreen.Bounds.Left) + Persistence.Instance.PaletteX);
+                Canvas.SetTop(Palette, Math.Abs(Top - currentScreen.Bounds.Top) + Persistence.Instance.PaletteY);
             }
             else
             {
@@ -137,8 +139,8 @@ namespace AntFu7.LiveDraw
                 Width = currentScreen.Bounds.Width;
                 Height = currentScreen.Bounds.Height;
 
-                Canvas.SetLeft(Palette, 15);
-                Canvas.SetTop(Palette, 60);
+                Canvas.SetLeft(Palette, Persistence.Instance.PaletteX);
+                Canvas.SetTop(Palette, Persistence.Instance.PaletteY);
             }
         }
 
@@ -295,15 +297,11 @@ namespace AntFu7.LiveDraw
                 SetEnable(_enable);
             }
         }
+
         private void SetOrientation(bool v)
         {
             PaletteRotate.BeginAnimation(RotateTransform.AngleProperty, new DoubleAnimation(v ? -90 : 0, Duration4));
             Palette.BeginAnimation(MinWidthProperty, new DoubleAnimation(v ? 90 : 0, Duration7));
-            //PaletteGrip.BeginAnimation(WidthProperty, new DoubleAnimation((double)Application.Current.Resources[v ? "VerticalModeGrip" : "HorizontalModeGrip"], Duration3));
-            //BasicButtonPanel.BeginAnimation(WidthProperty, new DoubleAnimation((double)Application.Current.Resources[v ? "VerticalModeFlowPanel" : "HorizontalModeFlowPanel"], Duration3));
-            //PaletteFlowPanel.BeginAnimation(WidthProperty, new DoubleAnimation((double)Application.Current.Resources[v ? "VerticalModeFlowPanel" : "HorizontalModeFlowPanel"], Duration3));
-            //ColorPickersPanel.BeginAnimation(WidthProperty, new DoubleAnimation((double)Application.Current.Resources[v ? "VerticalModeColorPickersPanel" : "HorizontalModeColorPickersPanel"], Duration3));
-            _displayOrientation = v;
         }
 
         #endregion
@@ -843,7 +841,8 @@ namespace AntFu7.LiveDraw
         }
         private void OrientationButton_Click(object sender, RoutedEventArgs e)
         {
-            SetOrientation(!_displayOrientation);
+            Persistence.Instance.Orientation = !Persistence.Instance.Orientation;
+            SetOrientation(Persistence.Instance.Orientation);
         }
         #endregion
 
@@ -935,11 +934,40 @@ namespace AntFu7.LiveDraw
             }
             _isDraging = false;
             Palette.Background = null;
+
+            if(Persistence.Instance.MultiScreen)
+            {
+                System.Windows.Forms.Screen currentScreen = GetCurrentScreen();
+                Persistence.Instance.PaletteX = (int)Canvas.GetLeft(Palette) - (int)Math.Abs(Left - currentScreen.Bounds.Left);
+                Persistence.Instance.PaletteY = (int)Canvas.GetTop(Palette) - (int)Math.Abs(Top - currentScreen.Bounds.Top);
+            }
+            else 
+            {
+                Persistence.Instance.PaletteX = (int)Canvas.GetLeft(Palette);
+                Persistence.Instance.PaletteY = (int)Canvas.GetTop(Palette);
+            }
+            
         }
+
         private void PaletteGrip_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            StartDrag();
+            if(e.ClickCount == 2 && e.RightButton == MouseButtonState.Pressed)
+            {
+                ResetPosition();
+            }
+            else
+            {
+                StartDrag();
+            }
         }
+
+        private void ResetPosition()
+        {
+            Persistence.Instance.PaletteX = -60;
+            Persistence.Instance.PaletteY = 190;
+            InitPositioning();
+        }
+
         private void Palette_MouseMove(object sender, MouseEventArgs e)
         {
             if (!_isDraging) return;
@@ -967,6 +995,10 @@ namespace AntFu7.LiveDraw
             if (e.Key == Key.R)
             {
                 SetEnable(!_enable);
+            }
+            else if(e.Key == Key.P && e.KeyboardDevice.Modifiers == (ModifierKeys.Control | ModifierKeys.Shift))
+            {
+                ResetPosition();
             }
             else if (e.Key == Key.Escape)
             {
