@@ -282,6 +282,7 @@ namespace AntFu7.LiveDraw
                 brushPreview?.BeginAnimation(WidthProperty, new DoubleAnimation(s, Duration4));
             }
         }
+
         private void SetEraserMode(bool v)
         {
             EraserButton.IsActived = v;
@@ -314,6 +315,7 @@ namespace AntFu7.LiveDraw
         {
             Save(new FileStream("Save\\" + filename + GenerateFileName(), FileMode.OpenOrCreate));
         }
+
         private void Save(Stream fs)
         {
             try
@@ -370,6 +372,7 @@ namespace AntFu7.LiveDraw
         {
             return DateTime.Now.ToString("yyyyMMdd-HHmmss") + fileExt;
         }
+
         #endregion
 
         #region /---------Helper---------/
@@ -383,6 +386,7 @@ namespace AntFu7.LiveDraw
             _displayingInfo = true;
             await InfoDisplayTimeUp(new Progress<string>(box => InfoBox.Text = box));
         }
+
         private Task InfoDisplayTimeUp(IProgress<string> box)
         {
             return Task.Run(() =>
@@ -392,6 +396,7 @@ namespace AntFu7.LiveDraw
                 _displayingInfo = false;
             });
         }
+
         private void SetStaticInfo(string info)
         {
             _staticInfo = info;
@@ -410,6 +415,7 @@ namespace AntFu7.LiveDraw
             };
             return dialog.ShowDialog() == true ? dialog.OpenFile() : Stream.Null;
         }
+
         private static Stream OpenDialog(string fileExt = ".fdw", string filter = "Free Draw Save (*.fdw)|*fdw")
         {
             var dialog = new Microsoft.Win32.OpenFileDialog()
@@ -446,9 +452,11 @@ namespace AntFu7.LiveDraw
                 EraseByPoint_Flag = (int)EraseMode.NONE;
             }
         }
+
         #endregion
 
         #region /---------Ink---------/
+
         private readonly Stack<StrokesHistoryNode> _history;
         private readonly Stack<StrokesHistoryNode> _redoHistory;
         private bool _ignoreStrokesChange;
@@ -465,6 +473,7 @@ namespace AntFu7.LiveDraw
             _ignoreStrokesChange = false;
             Push(_redoHistory, last);
         }
+
         private void Redo()
         {
             if (!CanRedo()) return;
@@ -482,18 +491,22 @@ namespace AntFu7.LiveDraw
         {
             collection.Push(node);
         }
+
         private static StrokesHistoryNode Pop(Stack<StrokesHistoryNode> collection)
         {
             return collection.Count == 0 ? null : collection.Pop();
         }
+
         private bool CanUndo()
         {
             return _history.Count != 0;
         }
+
         private bool CanRedo()
         {
             return _redoHistory.Count != 0;
         }
+
         private void StrokesChanged(object sender, StrokeCollectionChangedEventArgs e)
         {
             if (_ignoreStrokesChange) return;
@@ -510,10 +523,12 @@ namespace AntFu7.LiveDraw
             ClearHistory(_history);
             ClearHistory(_redoHistory);
         }
+
         private static void ClearHistory(Stack<StrokesHistoryNode> collection)
         {
             collection?.Clear();
         }
+
         private void Clear()
         {
             MainInkCanvas.Strokes.Clear();
@@ -526,19 +541,23 @@ namespace AntFu7.LiveDraw
             ani.Completed += ClearAniComplete; ;
             MainInkCanvas.BeginAnimation(OpacityProperty, ani);
         }
+
         private void ClearAniComplete(object sender, EventArgs e)
         {
             Clear();
             Display("Cleared");
             MainInkCanvas.BeginAnimation(OpacityProperty, new DoubleAnimation(1, Duration3));
         }
+
         #endregion
 
         #region /---------UI---------/
+
         private void DetailToggler_Click(object sender, RoutedEventArgs e)
         {
             SetDetailPanel(!_displayDetailPanel);
         }
+
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
             Topmost = false;
@@ -587,18 +606,22 @@ namespace AntFu7.LiveDraw
             if (_brushIndex > _brushSizes.Length - 1) _brushIndex = 0;
             SetBrushSize(_brushSizes[_brushIndex]);
         }
+
         private void LineButton_Click(object sender, RoutedEventArgs e)
         {
             LineMode(!_lineMode);
         }
+
         private void UndoButton_Click(object sender, RoutedEventArgs e)
         {
             Undo();
         }
+
         private void RedoButton_Click(object sender, RoutedEventArgs e)
         {
             Redo();
         }
+
         private void EraserButton_Click(object sender, RoutedEventArgs e)
         {
             if (_enable)
@@ -606,14 +629,17 @@ namespace AntFu7.LiveDraw
                 EraserFunction();
             }
         }
+
         private void ClearButton_Click(object sender, RoutedEventArgs e)
         {
             AnimatedClear(); //Warning! to missclick erasermode (confirmation click?)
         }
+
         private void PinButton_Click(object sender, RoutedEventArgs e)
         {
             Persistence.Instance.Topmost = !Persistence.Instance.Topmost;
         }
+
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
             if (MainInkCanvas.Strokes.Count == 0)
@@ -623,6 +649,7 @@ namespace AntFu7.LiveDraw
             }
             QuickSave();
         }
+
         private void SaveButton_RightClick(object sender, MouseButtonEventArgs e)
         {
             if (MainInkCanvas.Strokes.Count == 0)
@@ -632,6 +659,7 @@ namespace AntFu7.LiveDraw
             }
             Save(SaveDialog(GenerateFileName()));
         }
+
         private void LoadButton_Click(object sender, RoutedEventArgs e)
         {
             if (!PromptToSave()) return;
@@ -639,6 +667,7 @@ namespace AntFu7.LiveDraw
             if (s == Stream.Null) return;
             AnimatedReload(Load(s));
         }
+
         private void ExportButton_Click(object sender, RoutedEventArgs e)
         {
             ExportInk();
@@ -851,6 +880,7 @@ namespace AntFu7.LiveDraw
             Left,
             Right
         }
+
         private int _dockingEdgeThreshold = 30;
         private int _dockingAwaitTime = 10000;
         private int _dockingSideIndent = 290;
@@ -879,10 +909,12 @@ namespace AntFu7.LiveDraw
         {
             AnimatedCanvasMoving(Palette, new Point(ActualWidth + _dockingSideIndent, Canvas.GetTop(Palette)), Duration5);
         }
+
         private void LeftDocking()
         {
             AnimatedCanvasMoving(Palette, new Point(0 - _dockingSideIndent, Canvas.GetTop(Palette)), Duration5);
         }
+
         private void TopDocking()
         {
 
@@ -904,6 +936,7 @@ namespace AntFu7.LiveDraw
                 if (direction == DockingDirection.Top) TopDocking();
             });
         }
+
         #endregion
 
         #region /---------Dragging---------/
@@ -919,6 +952,7 @@ namespace AntFu7.LiveDraw
             _tempEnable = _enable;
             SetEnable(true);
         }
+
         private void EndDrag()
         {
             if (_isDraging == true)
@@ -972,14 +1006,17 @@ namespace AntFu7.LiveDraw
 
             _lastMousePosition = currentMousePosition;
         }
+
         private void Palette_MouseUp(object sender, MouseButtonEventArgs e)
         {
             EndDrag();
         }
+
         private void Palette_MouseLeave(object sender, MouseEventArgs e)
         {
             EndDrag();
         }
+
         #endregion
 
         #region /--------- Shortcuts --------/
@@ -1064,6 +1101,7 @@ namespace AntFu7.LiveDraw
                     break;
             }
         }
+
         #endregion
 
         #region /------ Line Mode -------/
