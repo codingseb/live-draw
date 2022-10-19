@@ -165,7 +165,7 @@
                         <ControlTemplate TargetType="LiveDraw:ColorPicker">
                             <Grid Background="{StaticResource FakeTransparent}">
                                 <Border x:Name="ControlBorder" Margin="{StaticResource ElementMarginMiddle}" Background="{TemplateBinding Background}" CornerRadius="{StaticResource ColorPickerNormalCorner}">
-                                    <Path x:Name="CheckedIcon" Fill="White" Stretch="Uniform" Height="0" Data="{DynamicResource IconChecked}"/>
+                                    <Path x:Name="CheckedIcon" Fill="{TemplateBinding Background, Converter={LiveDraw:ColorCheckedIconColorConverter}}" Stretch="Uniform" Height="0" Data="{DynamicResource IconChecked}"/>
                                 </Border>
                             </Grid>
                             <ControlTemplate.Triggers>
