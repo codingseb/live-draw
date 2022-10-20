@@ -13,7 +13,7 @@ using System.Windows;
 
 namespace AntFu7.LiveDraw
 {
-    public class Persistence : INotifyPropertyChanged
+    public class Persistence : NotifyPropertyChangedBase
     {
         public bool Topmost { get; set; }
 
@@ -25,18 +25,13 @@ namespace AntFu7.LiveDraw
 
         public int PaletteY { get; set; } = 190;
 
+        public string Color { get; set; } = "Black";
+
         #region Json singleton
 
         private static readonly string fileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "LiveDraw", "Persist.json");
 
         private static Persistence instance;
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public virtual void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
 
         public static Persistence Instance
         {

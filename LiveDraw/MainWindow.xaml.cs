@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
@@ -16,8 +15,12 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using Screen = System.Windows.Forms.Screen;
+using Graphics = System.Drawing.Graphics;
+using Bitmap = System.Drawing.Bitmap;
+using CopyPixelOperation = System.Drawing.CopyPixelOperation;
 using Brush = System.Windows.Media.Brush;
 using Point = System.Windows.Point;
+using AntFu7.LiveDraw.Helpers;
 
 namespace AntFu7.LiveDraw
 {
@@ -90,7 +93,7 @@ namespace AntFu7.LiveDraw
                 InitializeComponent();
                 SetOrientation(Persistence.Instance.Orientation);
                 InitPositioning();
-                SetColor(DefaultColorPicker);
+                SetColor(Persistence.Instance.Color);
                 SetEnable(true);
                 SetDetailPanel(true);
                 SetBrushSize(_brushSizes[_brushIndex]);
@@ -251,19 +254,40 @@ namespace AntFu7.LiveDraw
             }
         }
 
-        private void SetColor(ColorPicker b)
+        private void SetColor(string color)
         {
-            if (ReferenceEquals(_selectedColor, b)) return;
-            if (b.Background is not SolidColorBrush solidColorBrush) return;
+            try
+            {
+                color = ((Color)ColorConverter.ConvertFromString(color)).ToString();
+
+                ColorPicker colorPicker = ColorPickersPanel.FindVisualDescendant<ColorPicker>(cp => cp.Background.ToString().Equals(color));
+
+                if(colorPicker != null)
+                {
+                    SetColor(colorPicker);
+                    return;
+                }
+            }
+            catch { }
+
+            SetColor(DefaultColorPicker);
+        }
+
+        private void SetColor(ColorPicker colorPicker)
+        {
+            if (ReferenceEquals(_selectedColor, colorPicker)) return;
+            if (colorPicker.Background is not SolidColorBrush solidColorBrush) return;
+            
+            Persistence.Instance.Color = solidColorBrush.ToString();
 
             var ani = new ColorAnimation(solidColorBrush.Color, Duration3);
 
             MainInkCanvas.DefaultDrawingAttributes.Color = solidColorBrush.Color;
             brushPreview.Background.BeginAnimation(SolidColorBrush.ColorProperty, ani);
-            b.IsActived = true;
+            colorPicker.IsActived = true;
             if (_selectedColor != null)
                 _selectedColor.IsActived = false;
-            _selectedColor = b;
+            _selectedColor = colorPicker;
         }
 
         private void SetBrushSize(double s)
