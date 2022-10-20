@@ -41,10 +41,6 @@
             <Thickness x:Key="ElementMarginMiddle">5</Thickness>
             <Thickness x:Key="ElementMarginLarge">10</Thickness>
 
-            <sys:Double x:Key="ColorPickerSmall">35</sys:Double>
-            <sys:Double x:Key="ColorPickerMiddle">55</sys:Double>
-            <sys:Double x:Key="ColorPickerLarge">75</sys:Double>
-
             <CornerRadius x:Key="ColorPickerNormalCorner">20</CornerRadius>
             <CornerRadius x:Key="ColorPickerHoverCorner">12</CornerRadius>
 
@@ -62,6 +58,7 @@
                 <Setter Property="HorizontalAlignment" Value="Center" />
                 <Setter Property="VerticalAlignment" Value="Center" />
             </Style>
+            
             <Style x:Key="FunctionalButton" TargetType="LiveDraw:ActivableButton">
                 <Setter Property="Background" Value="{StaticResource FunctionalButtonBackground}"/>
                 <Setter Property="Cursor" Value="Hand"/>

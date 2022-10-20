@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -98,7 +97,7 @@ namespace AntFu7.LiveDraw
                 Left = Screen.AllScreens.Min(s => s.Bounds.Left);
                 Top = Screen.AllScreens.Min(s => s.Bounds.Top);
                 Width = Screen.AllScreens.Max(s => s.Bounds.Right) - Screen.AllScreens.Min(s => s.Bounds.Left);
-                Height= Screen.AllScreens.Max(s => s.Bounds.Bottom) - Screen.AllScreens.Min(s => s.Bounds.Top);
+                Height = Screen.AllScreens.Max(s => s.Bounds.Bottom) - Screen.AllScreens.Min(s => s.Bounds.Top);
 
                 Canvas.SetLeft(Palette, Math.Abs(Left - currentScreen.Bounds.Left) + Persistence.Instance.PaletteX);
                 Canvas.SetTop(Palette, Math.Abs(Top - currentScreen.Bounds.Top) + Persistence.Instance.PaletteY);
@@ -242,7 +241,6 @@ namespace AntFu7.LiveDraw
 
         private void SetColor(ColorPicker colorPicker)
         {
-            if (ReferenceEquals(_selectedColor, colorPicker)) return;
             if (colorPicker.Background is not SolidColorBrush solidColorBrush) return;
 
             Persistence.Instance.Color = solidColorBrush.ToString();
@@ -251,9 +249,9 @@ namespace AntFu7.LiveDraw
 
             MainInkCanvas.DefaultDrawingAttributes.Color = solidColorBrush.Color;
             brushPreview.Background.BeginAnimation(SolidColorBrush.ColorProperty, ani);
-            colorPicker.IsActived = true;
             if (_selectedColor != null)
                 _selectedColor.IsActived = false;
+            colorPicker.IsActived = true;
             _selectedColor = colorPicker;
         }
 
@@ -699,7 +697,7 @@ namespace AntFu7.LiveDraw
                 var encoder = new PngBitmapEncoder();
                 encoder.Frames.Add(BitmapFrame.Create(rtb));
 
-                CroppedBitmap crop = new CroppedBitmap(rtb, new Int32Rect { X =  x, Y = y, Width = w, Height = h });
+                CroppedBitmap crop = new CroppedBitmap(rtb, new Int32Rect { X = x, Y = y, Width = w, Height = h });
                 BitmapEncoder cropEncoder = new PngBitmapEncoder();
                 cropEncoder.Frames.Add(BitmapFrame.Create(crop));
 
@@ -1174,8 +1172,41 @@ namespace AntFu7.LiveDraw
         private void ScreenSelectionButton_Click(object sender, RoutedEventArgs e)
         {
             Persistence.Instance.MultiScreen = !Persistence.Instance.MultiScreen;
-            Clear();
+            //Clear();
             InitPositioning();
+        }
+
+        #endregion
+
+        #region /------ Color Selection ------/
+
+        private void ColorSelector_Click(object sender, RoutedEventArgs e)
+        {
+            ColorSelectionPanel.Visibility = Visibility.Visible;
+        }
+
+        private void ColorSelectionPanel_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            try
+            {
+                Win32Point point = new Win32Point();
+                if (Win32.GetCursorPos(ref point))
+                {
+                    ColorSelectionPicker.Background = new SolidColorBrush(Win32.GetPixelColor(point.X, point.Y));
+                    SetColor(ColorSelectionPicker);
+                }
+            }
+            catch { }
+            finally
+            {
+                ColorSelectionPanel.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        private void ColorSelectionPicker_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            ColorSelectionPicker.Background = Brushes.White;
+            SetColor(ColorSelectionPicker);
         }
 
         #endregion
