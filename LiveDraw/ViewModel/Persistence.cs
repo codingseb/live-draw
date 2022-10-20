@@ -21,9 +21,9 @@ namespace AntFu7.LiveDraw
 
         public bool Orientation { get; set; }
 
-        public int PaletteX { get; set; } = -60;
+        public int PaletteX { get; set; } = Globals.DEFAULT_PALETTE_X;
 
-        public int PaletteY { get; set; } = 190;
+        public int PaletteY { get; set; } = Globals.DEFAULT_PALETTE_Y;
 
         public string Color { get; set; } = "Black";
 

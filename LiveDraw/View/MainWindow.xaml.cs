@@ -21,6 +21,7 @@ using CopyPixelOperation = System.Drawing.CopyPixelOperation;
 using Brush = System.Windows.Media.Brush;
 using Point = System.Windows.Point;
 using AntFu7.LiveDraw.Helpers;
+using AntFu7.LiveDraw.Model;
 
 namespace AntFu7.LiveDraw
 {
@@ -1017,7 +1018,7 @@ namespace AntFu7.LiveDraw
 
         private void ResetPosition()
         {
-            Persistence.Instance.PaletteX = -60;
+            Persistence.Instance.PaletteX = -70;
             Persistence.Instance.PaletteY = 190;
             InitPositioning();
         }
