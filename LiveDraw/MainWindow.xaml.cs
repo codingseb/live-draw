@@ -1,4 +1,6 @@
-﻿using System;
+﻿using AntFu7.LiveDraw.Helpers;
+using AntFu7.LiveDraw.Model;
+using System;
 using System.Collections.Generic;
 using System.Drawing.Imaging;
 using System.IO;
@@ -14,14 +16,12 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
-using Screen = System.Windows.Forms.Screen;
-using Graphics = System.Drawing.Graphics;
 using Bitmap = System.Drawing.Bitmap;
-using CopyPixelOperation = System.Drawing.CopyPixelOperation;
 using Brush = System.Windows.Media.Brush;
+using CopyPixelOperation = System.Drawing.CopyPixelOperation;
+using Graphics = System.Drawing.Graphics;
 using Point = System.Windows.Point;
-using AntFu7.LiveDraw.Helpers;
-using AntFu7.LiveDraw.Model;
+using Screen = System.Windows.Forms.Screen;
 
 namespace AntFu7.LiveDraw
 {
@@ -55,30 +55,6 @@ namespace AntFu7.LiveDraw
             public Int32 X;
             public Int32 Y;
         };
-
-        /*#region Mouse Throught
-
-        private const int WsExTransparent = 0x20;
-        private const int GwlExstyle = (-20);
-
-        [DllImport("user32", EntryPoint = "SetWindowLong")]
-        private static extern uint SetWindowLong(IntPtr hwnd, int nIndex, uint dwNewLong);
-
-        [DllImport("user32", EntryPoint = "GetWindowLong")]
-        private static extern uint GetWindowLong(IntPtr hwnd, int nIndex);
-
-        private void SetThrought(bool t)
-        {
-            var hwnd = new WindowInteropHelper(this).Handle;
-            var extendedStyle = GetWindowLong(hwnd, GwlExstyle);
-            if (t)
-                SetWindowLong(hwnd, GwlExstyle, extendedStyle | WsExTransparent);
-            else
-                SetWindowLong(hwnd, GwlExstyle, extendedStyle & ~(uint)WsExTransparent);
-        }
-
-
-        #endregion*/
 
         #region /---------Lifetime---------/
 
@@ -186,9 +162,7 @@ namespace AntFu7.LiveDraw
                 QuickSave();
                 return true;
             }
-            if (r == MessageBoxResult.No || r == MessageBoxResult.None)
-                return true;
-            return false;
+            return r == MessageBoxResult.No || r == MessageBoxResult.None;
         }
 
         #endregion
@@ -243,7 +217,7 @@ namespace AntFu7.LiveDraw
             MainInkCanvas.UseCustomCursor = false;
 
             //SetTopMost(false);
-            if (_enable == true)
+            if (_enable)
             {
                 LineButton.IsActived = false;
                 EraserButton.IsActived = false;
@@ -265,7 +239,7 @@ namespace AntFu7.LiveDraw
 
                 ColorPicker colorPicker = ColorPickersPanel.FindVisualDescendant<ColorPicker>(cp => cp.Background.ToString().Equals(color));
 
-                if(colorPicker != null)
+                if (colorPicker != null)
                 {
                     SetColor(colorPicker);
                     return;
@@ -280,7 +254,7 @@ namespace AntFu7.LiveDraw
         {
             if (ReferenceEquals(_selectedColor, colorPicker)) return;
             if (colorPicker.Background is not SolidColorBrush solidColorBrush) return;
-            
+
             Persistence.Instance.Color = solidColorBrush.ToString();
 
             var ani = new ColorAnimation(solidColorBrush.Color, Duration3);
@@ -574,7 +548,7 @@ namespace AntFu7.LiveDraw
         private void AnimatedClear()
         {
             var ani = new DoubleAnimation(0, Duration3);
-            ani.Completed += ClearAniComplete; ;
+            ani.Completed += ClearAniComplete;
             MainInkCanvas.BeginAnimation(OpacityProperty, ani);
         }
 
@@ -801,7 +775,6 @@ namespace AntFu7.LiveDraw
             {
                 ExportFullScreen(GetCurrentScreen());
             }
-
         }
 
         private void ExportFullScreen(System.Windows.Forms.Screen screen)
@@ -947,7 +920,6 @@ namespace AntFu7.LiveDraw
 
         private void TopDocking()
         {
-
         }
 
         private async void AwaitDocking()
@@ -986,7 +958,7 @@ namespace AntFu7.LiveDraw
 
         private void EndDrag()
         {
-            if (_isDraging == true)
+            if (_isDraging)
             {
                 SetEnable(_tempEnable);
             }
@@ -1004,7 +976,6 @@ namespace AntFu7.LiveDraw
                 Persistence.Instance.PaletteX = (int)Canvas.GetLeft(Palette);
                 Persistence.Instance.PaletteY = (int)Canvas.GetTop(Palette);
             }
-
         }
 
         private void PaletteGrip_MouseDown(object sender, MouseButtonEventArgs e)
@@ -1087,7 +1058,7 @@ namespace AntFu7.LiveDraw
                         EraserFunction();
                     break;
                 case Key.B:
-                    if (_eraserMode == true)
+                    if (_eraserMode)
                         SetEraserMode(false);
                     SetEnable(true);
                     break;
@@ -1132,7 +1103,6 @@ namespace AntFu7.LiveDraw
         #region /------ Line Mode -------/
 
         private bool _isMoving = false;
-        private bool _lineMode = false;
         private Point _startPoint;
         private Stroke _lastStroke;
 
@@ -1169,7 +1139,7 @@ namespace AntFu7.LiveDraw
 
         private void EndLine(object sender, MouseButtonEventArgs e)
         {
-            if (_isMoving == true)
+            if (_isMoving)
             {
                 if (_lastStroke != null)
                 {
@@ -1179,7 +1149,6 @@ namespace AntFu7.LiveDraw
                     };
                     Push(_history, new StrokesHistoryNode(collection, StrokesHistoryNodeType.Added));
                 }
-
             }
             _isMoving = false;
             _ignoreStrokesChange = false;
@@ -1187,7 +1156,7 @@ namespace AntFu7.LiveDraw
 
         private void MakeLine(object sender, MouseEventArgs e)
         {
-            if (_isMoving == false)
+            if (!_isMoving)
                 return;
 
             DrawingAttributes newLine = MainInkCanvas.DefaultDrawingAttributes.Clone();
