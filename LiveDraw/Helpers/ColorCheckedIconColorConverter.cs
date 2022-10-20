@@ -4,7 +4,7 @@ using System.Windows.Data;
 using System.Windows.Markup;
 using System.Windows.Media;
 
-namespace AntFu7.LiveDraw.Helpers
+namespace AntFu7.LiveDraw
 {
     public class ColorCheckedIconColorConverter : MarkupExtension, IValueConverter
     {

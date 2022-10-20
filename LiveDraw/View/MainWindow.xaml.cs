@@ -1018,8 +1018,8 @@ namespace AntFu7.LiveDraw
 
         private void ResetPosition()
         {
-            Persistence.Instance.PaletteX = -70;
-            Persistence.Instance.PaletteY = 190;
+            Persistence.Instance.PaletteX = Globals.DEFAULT_PALETTE_X;
+            Persistence.Instance.PaletteY = Globals.DEFAULT_PALETTE_Y;
             InitPositioning();
         }
 
