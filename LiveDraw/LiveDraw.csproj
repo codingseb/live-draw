@@ -10,7 +10,7 @@
     <Configurations>Debug;Release</Configurations>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>Rescoures\Icon.ico</ApplicationIcon>
+    <ApplicationIcon>Resources\Icon.ico</ApplicationIcon>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -30,11 +30,7 @@
     <PackageReference Include="PropertyChanged.Fody" Version="4.0.5" PrivateAssets="all" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Rescoures\Icon.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Rescoures\save29.png" />
-    <Resource Include="Rescoures\undo6.png" />
+    <Resource Include="Resources\Icon.ico" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Properties\Settings.Designer.cs">

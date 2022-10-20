@@ -18,7 +18,7 @@ namespace AntFu7.LiveDraw
 {
     public static class Globals
     {
-        public const int DEFAULT_PALETTE_X = -50;
-        public const int DEFAULT_PALETTE_Y = 170;
+        public const int DEFAULT_PALETTE_X = 0;
+        public const int DEFAULT_PALETTE_Y = 100;
     }
 }

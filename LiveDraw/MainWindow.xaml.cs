@@ -27,14 +27,14 @@ namespace AntFu7.LiveDraw
 {
     public partial class MainWindow : Window
     {
-        public int EraseByPoint_Flag;
-
         public enum EraseMode
         {
             NONE = 0,
             ERASER = 1,
             ERASERBYPOINT = 2
         }
+
+        public EraseMode EraseByPoint_Flag;
 
         private static Mutex mutex = new Mutex(true, "LiveDraw");
         private static readonly Duration Duration1 = (Duration)Application.Current.Resources["Duration1"];
@@ -44,17 +44,6 @@ namespace AntFu7.LiveDraw
         private static readonly Duration Duration5 = (Duration)Application.Current.Resources["Duration5"];
         private static readonly Duration Duration7 = (Duration)Application.Current.Resources["Duration7"];
         private static readonly Duration Duration10 = (Duration)Application.Current.Resources["Duration10"];
-
-        [DllImport("user32.dll")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        internal static extern bool GetCursorPos(ref Win32Point pt);
-
-        [StructLayout(LayoutKind.Sequential)]
-        internal struct Win32Point
-        {
-            public Int32 X;
-            public Int32 Y;
-        };
 
         #region /---------Lifetime---------/
 
@@ -84,7 +73,6 @@ namespace AntFu7.LiveDraw
                 MainInkCanvas.MouseLeftButtonUp += EndLine;
                 MainInkCanvas.MouseMove += MakeLine;
                 MainInkCanvas.MouseWheel += BrushSize;
-                //RightDocking();
             }
             else
             {
@@ -96,7 +84,7 @@ namespace AntFu7.LiveDraw
         {
             Win32Point mousePos = new Win32Point();
 
-            GetCursorPos(ref mousePos);
+            Win32.GetCursorPos(ref mousePos);
 
             return Screen.AllScreens.First(s => s.Bounds.Contains(mousePos.X, mousePos.Y));
         }
@@ -249,7 +237,7 @@ namespace AntFu7.LiveDraw
             }
             catch { }
 
-            SetColor(DefaultColorPicker);
+            SetColor("Black");
         }
 
         private void SetColor(ColorPicker colorPicker)
@@ -441,13 +429,13 @@ namespace AntFu7.LiveDraw
         void EraserFunction()
         {
             LineMode(false);
-            if (EraseByPoint_Flag == (int)EraseMode.NONE)
+            if (EraseByPoint_Flag == EraseMode.NONE)
             {
                 SetEraserMode(!_eraserMode);
                 EraserButton.ToolTip = "Toggle eraser (by point) mode (D)";
-                EraseByPoint_Flag = (int)EraseMode.ERASER;
+                EraseByPoint_Flag = EraseMode.ERASER;
             }
-            else if (EraseByPoint_Flag == (int)EraseMode.ERASER)
+            else if (EraseByPoint_Flag == EraseMode.ERASER)
             {
                 EraserButton.IsActived = true;
                 SetStaticInfo("Eraser Mode (Point)");
@@ -455,13 +443,13 @@ namespace AntFu7.LiveDraw
                 double s = MainInkCanvas.EraserShape.Height;
                 MainInkCanvas.EraserShape = new EllipseStylusShape(s, s);
                 MainInkCanvas.EditingMode = InkCanvasEditingMode.EraseByPoint;
-                EraseByPoint_Flag = (int)EraseMode.ERASERBYPOINT;
+                EraseByPoint_Flag = EraseMode.ERASERBYPOINT;
             }
-            else if (EraseByPoint_Flag == (int)EraseMode.ERASERBYPOINT)
+            else if (EraseByPoint_Flag == EraseMode.ERASERBYPOINT)
             {
                 SetEraserMode(!_eraserMode);
                 EraserButton.ToolTip = "Toggle eraser mode (E)";
-                EraseByPoint_Flag = (int)EraseMode.NONE;
+                EraseByPoint_Flag = EraseMode.NONE;
             }
         }
 
@@ -580,13 +568,13 @@ namespace AntFu7.LiveDraw
 
         private void ColorPickers_Click(object sender, RoutedEventArgs e)
         {
-            if (sender is not ColorPicker border) return;
-            SetColor(border);
+            if (sender is not ColorPicker colorPicker) return;
+            SetColor(colorPicker);
 
-            if (EraseByPoint_Flag != (int)EraseMode.NONE)
+            if (EraseByPoint_Flag != EraseMode.NONE)
             {
                 SetEraserMode(false);
-                EraseByPoint_Flag = (int)EraseMode.NONE;
+                EraseByPoint_Flag = EraseMode.NONE;
                 EraserButton.ToolTip = "Toggle eraser mode (E)";
             }
         }
@@ -859,7 +847,7 @@ namespace AntFu7.LiveDraw
             {
                 SetEraserMode(!_eraserMode);
                 EraserButton.ToolTip = "Toggle eraser mode (E)";
-                EraseByPoint_Flag = (int)EraseMode.NONE;
+                EraseByPoint_Flag = EraseMode.NONE;
             }
         }
 
@@ -1110,7 +1098,7 @@ namespace AntFu7.LiveDraw
                 Persistence.Instance.LineMode = lineMode;
                 if (lineMode)
                 {
-                    EraseByPoint_Flag = (int)EraseMode.NONE;
+                    EraseByPoint_Flag = EraseMode.NONE;
                     MainInkCanvas.EditingMode = InkCanvasEditingMode.EraseByStroke;
                     SetEraserMode(false);
                     EraserButton.IsActived = false;

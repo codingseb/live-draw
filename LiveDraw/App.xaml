@@ -45,7 +45,7 @@
             <sys:Double x:Key="ColorPickerMiddle">55</sys:Double>
             <sys:Double x:Key="ColorPickerLarge">75</sys:Double>
 
-            <CornerRadius x:Key="ColorPickerNormalCorner">18</CornerRadius>
+            <CornerRadius x:Key="ColorPickerNormalCorner">20</CornerRadius>
             <CornerRadius x:Key="ColorPickerHoverCorner">12</CornerRadius>
 
             <FontFamily x:Key="InterfaceFont">Consolas</FontFamily>
@@ -58,44 +58,6 @@
             <sys:Double x:Key="HorizontalModeColorPickersPanel">480</sys:Double>
             <sys:Double x:Key="HorizontalModeGrip">200</sys:Double>
             
-            <ControlTemplate x:Key="SliderHorizontal" TargetType="{x:Type Slider}">
-                <Border x:Name="border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
-                    <Grid>
-                        <Border x:Name="TrackBackground" Height="4.0" Margin="5,0" VerticalAlignment="center" Background="#FFB7B7B7" CornerRadius="1"/>
-                        <Track x:Name="PART_Track">
-                            <Track.Thumb>
-                                <Thumb x:Name="Thumb" Focusable="False" Height="13" Foreground="{TemplateBinding Foreground}" OverridesDefaultStyle="True" VerticalAlignment="Center" Width="{Binding RelativeSource={RelativeSource Self},Path=Height}">
-                                    <Thumb.Template>
-                                        <ControlTemplate>
-                                            <Grid>
-                                                <Border CornerRadius="10" Background="#FF6B6B6B"/>
-                                            </Grid>
-                                        </ControlTemplate>
-                                    </Thumb.Template>
-                                </Thumb>
-                            </Track.Thumb>
-                        </Track>
-                    </Grid>
-                </Border>
-                <ControlTemplate.Triggers>
-                    <Trigger Property="IsMouseOver" Value="True">
-                        <Trigger.EnterActions>
-                            <BeginStoryboard>
-                                <Storyboard TargetName="Thumb" TargetProperty="Height">
-                                    <DoubleAnimation Duration="{StaticResource Duration1}" To="16"/>
-                                </Storyboard>
-                            </BeginStoryboard>
-                        </Trigger.EnterActions>
-                        <Trigger.ExitActions>
-                            <BeginStoryboard>
-                                <Storyboard TargetName="Thumb" TargetProperty="Height">
-                                    <DoubleAnimation Duration="{StaticResource Duration3}" To="13"/>
-                                </Storyboard>
-                            </BeginStoryboard>
-                        </Trigger.ExitActions>
-                    </Trigger>
-                </ControlTemplate.Triggers>
-            </ControlTemplate>
             <Style x:Key="ButtonContent" TargetType="{x:Type ContentPresenter}">
                 <Setter Property="HorizontalAlignment" Value="Center" />
                 <Setter Property="VerticalAlignment" Value="Center" />
@@ -115,38 +77,6 @@
                     </Setter.Value>
                 </Setter>
                 <Style.Triggers>
-                    <!--<Trigger Property="IsMouseOver" Value="True">
-                        <Trigger.EnterActions>
-                            <BeginStoryboard>
-                                <Storyboard>
-                                    <ColorAnimation Storyboard.TargetProperty="(Background).(SolidColorBrush.Color)" To="{StaticResource FunctionalButtonHoverColor}" Duration="{StaticResource Duration5}"/>
-                                </Storyboard>
-                            </BeginStoryboard>
-                        </Trigger.EnterActions>
-                        <Trigger.ExitActions>
-                            <BeginStoryboard>
-                                <Storyboard>
-                                    <ColorAnimation Storyboard.TargetProperty="(Background).(SolidColorBrush.Color)" To="{StaticResource FunctionalButtonBackgroundColor}" Duration="{StaticResource Duration5}"/>
-                                </Storyboard>
-                            </BeginStoryboard>
-                        </Trigger.ExitActions>
-                    </Trigger>
-                    <Trigger Property="IsActived" Value="True">
-                        <Trigger.EnterActions>
-                            <BeginStoryboard>
-                                <Storyboard>
-                                    <ColorAnimation Storyboard.TargetProperty="(Background).(SolidColorBrush.Color)" To="{StaticResource FunctionalButtonActiveColor}" Duration="{StaticResource Duration5}"/>
-                                </Storyboard>
-                            </BeginStoryboard>
-                        </Trigger.EnterActions>
-                        <Trigger.ExitActions>
-                            <BeginStoryboard>
-                                <Storyboard>
-                                    <ColorAnimation Storyboard.TargetProperty="(Background).(SolidColorBrush.Color)" To="{StaticResource FunctionalButtonBackgroundColor}" Duration="{StaticResource Duration5}"/>
-                                </Storyboard>
-                            </BeginStoryboard>
-                        </Trigger.ExitActions>
-                    </Trigger>-->
                     <Trigger Property="IsActived" Value="True">
                         <Trigger.Setters>
                             <Setter Property="Background" Value="{StaticResource FunctionalButtonActive}" />
@@ -157,10 +87,9 @@
 
             <Style TargetType="LiveDraw:ColorPicker">
                 <Setter Property="Cursor" Value="Pen"/>
-                <Setter Property="Width" Value="{StaticResource ColorPickerSmall}"/>
-                <Setter Property="Height" Value="{Binding RelativeSource={RelativeSource Self},Path=Width}"/>
-                <Setter Property="Size" Value="Small"/>
-                <Setter Property="Template">
+                <Setter Property="Width" Value="35"/>
+                <Setter Property="Height" Value="35"/>
+                <Setter Property="Template" >
                     <Setter.Value>
                         <ControlTemplate TargetType="LiveDraw:ColorPicker">
                             <Grid Background="{StaticResource FakeTransparent}">
@@ -169,22 +98,6 @@
                                 </Border>
                             </Grid>
                             <ControlTemplate.Triggers>
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Trigger.EnterActions>
-                                        <BeginStoryboard>
-                                            <Storyboard TargetName="ControlBorder" TargetProperty="CornerRadius">
-                                                <LiveDraw:CornerRadiusAnimation Duration="{StaticResource Duration2}" To="{StaticResource ColorPickerHoverCorner}"/>
-                                            </Storyboard>
-                                        </BeginStoryboard>
-                                    </Trigger.EnterActions>
-                                    <Trigger.ExitActions>
-                                        <BeginStoryboard>
-                                            <Storyboard TargetName="ControlBorder" TargetProperty="CornerRadius">
-                                                <LiveDraw:CornerRadiusAnimation Duration="{StaticResource Duration4}" To="{StaticResource ColorPickerNormalCorner}"/>
-                                            </Storyboard>
-                                        </BeginStoryboard>
-                                    </Trigger.ExitActions>
-                                </Trigger>
                                 <Trigger Property="IsActived" Value="True">
                                     <Trigger.EnterActions>
                                         <BeginStoryboard>
