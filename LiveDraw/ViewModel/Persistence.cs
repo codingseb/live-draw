@@ -21,6 +21,8 @@ namespace AntFu7.LiveDraw
 
         public bool Orientation { get; set; }
 
+        public bool LineMode { get; set; }
+
         public int PaletteX { get; set; } = Globals.DEFAULT_PALETTE_X;
 
         public int PaletteY { get; set; } = Globals.DEFAULT_PALETTE_Y;
