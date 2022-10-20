@@ -28,7 +28,6 @@
         <SolidColorBrush x:Key="PaintingColor10" Color="#FFDF2828"/>
         <SolidColorBrush x:Key="PaintingColor11" Color="#FFE2386D"/>
         <SolidColorBrush x:Key="PaintingColor12" Color="Black"/>
-        <SolidColorBrush x:Key="PaintingColor13" Color="White"/>
 
         <Style TargetType="Path">
             <Setter Property="Fill" Value="White"/>
@@ -46,7 +45,7 @@
             </InkCanvas.DefaultDrawingAttributes>
         </InkCanvas>
         <Canvas>
-            <Grid x:Name="Palette" HorizontalAlignment="Left" VerticalAlignment="Top" MouseMove="Palette_MouseMove" MouseUp="Palette_MouseUp" MouseLeave="Palette_MouseLeave" Canvas.Top="130" Canvas.Left="130" MinWidth="0">
+            <Grid x:Name="Palette" HorizontalAlignment="Left" VerticalAlignment="Top" MouseMove="Palette_MouseMove" MouseUp="Palette_MouseUp" MouseLeave="Palette_MouseLeave" MinWidth="0">
                 <Grid.RenderTransform>
                     <RotateTransform x:Name="PaletteRotate" CenterX="265" CenterY="100" Angle="0"/>
                 </Grid.RenderTransform>
@@ -119,7 +118,20 @@
                         <Grid x:Name="BasicButtonPanel" Width="{StaticResource HorizontalModeColorPickersPanel}" Margin="0">
                             <WrapPanel VerticalAlignment="Top" Margin="0,0,10,0" Orientation="Vertical" HorizontalAlignment="Center">
                                 <WrapPanel VerticalAlignment="Top" Margin="0,0,10,0" Orientation="Horizontal" HorizontalAlignment="Center">
-                                    <Button x:Name="MinimizeButton" Style="{StaticResource SpinningButton}" Background="#338A8A8A" Click="MinimizeButton_Click"  VerticalAlignment="Center" ToolTip="Minimize" >
+                                    <Button x:Name="MinimizeButton" 
+                                            Background="#338A8A8A" 
+                                            Click="MinimizeButton_Click"
+                                            VerticalAlignment="Center" 
+                                            ToolTip="Minimize" >
+                                        <Button.Style>
+                                            <Style TargetType="Button" BasedOn="{StaticResource SpinningButton}">
+                                                <Style.Triggers>
+                                                    <Trigger Property="Opacity" Value="0">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Button.Style>
                                         <Button.RenderTransform>
                                             <RotateTransform CenterX="12.5" CenterY="12.5" Angle="{Binding MinWidth, ElementName=Palette}"/>
                                         </Button.RenderTransform>
@@ -145,11 +157,17 @@
                             </WrapPanel>
                         </Grid>
                         <Grid x:Name="ColorPickersPanel" Width="{StaticResource HorizontalModeColorPickersPanel}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="{StaticResource ElementMarginMiddle}">
+                            <Grid.Style>
+                                <Style TargetType="Grid">
+                                    <Style.Triggers>
+                                        <Trigger Property="Opacity" Value="0">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Grid.Style>
                             <WrapPanel  Margin="0" HorizontalAlignment="Center">
                                 <WrapPanel.Resources>
-                                    <Style TargetType="local:ColorPicker" BasedOn="{StaticResource ColorPicker}">
-                                        <Setter Property="Size" Value="{Binding ElementName=DefaultColorPicker,Path=Size}"/>
-                                    </Style>
                                     <Style TargetType="StackPanel">
                                         <Setter Property="Orientation" Value="Horizontal"></Setter>
                                     </Style>
@@ -214,7 +232,7 @@
                                         <RotateTransform CenterX="17.5" CenterY="17.5" Angle="{Binding MinWidth, ElementName=Palette}"/>
                                     </local:ColorPicker.RenderTransform>
                                 </local:ColorPicker>
-                                <local:ColorPicker Background="{StaticResource PaintingColor13}" Click="ColorPickers_Click">
+                                <local:ColorPicker Background="White" Click="ColorPickers_Click">
                                     <local:ColorPicker.RenderTransform>
                                         <RotateTransform CenterX="17.5" CenterY="17.5" Angle="{Binding MinWidth, ElementName=Palette}"/>
                                     </local:ColorPicker.RenderTransform>
@@ -231,7 +249,6 @@
                                     </Style.Triggers>
                                 </Style>
                             </StackPanel.Style>
-                            <Slider Background="{StaticResource FakeTransparent}" Minimum="1" ValueChanged="Slider_ValueChanged" IsMoveToPointEnabled="True" IsSelectionRangeEnabled="True" Focusable="False" Maximum="5" Template="{StaticResource SliderHorizontal}" Foreground="#FFBC1919" Value="2" Height="20" Visibility="Collapsed"/>
                             <WrapPanel x:Name="ButtonPanel" HorizontalAlignment="Center">
                                 <WrapPanel.Resources>
                                     <Style TargetType="local:ActivableButton" BasedOn="{StaticResource FunctionalButton}">

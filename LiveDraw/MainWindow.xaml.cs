@@ -182,20 +182,22 @@ namespace AntFu7.LiveDraw
             if (v)
             {
                 DetailTogglerRotate.BeginAnimation(RotateTransform.AngleProperty, new DoubleAnimation(180, Duration5));
-                //DefaultColorPicker.Size = ColorPickerButtonSize.Middle;
+                ColorPickersPanel.BeginAnimation(OpacityProperty, new DoubleAnimation(0, 1, Duration4));
                 DetailPanel.BeginAnimation(OpacityProperty, new DoubleAnimation(0, 1, Duration4));
-                //PaletteGrip.BeginAnimation(WidthProperty, new DoubleAnimation(130, Duration3));
-                //MinimizeButton.BeginAnimation(OpacityProperty, new DoubleAnimation(0, 1, Duration3));
-                //MinimizeButton.BeginAnimation(HeightProperty, new DoubleAnimation(0, 25, Duration3));
+                PaletteGrip.BeginAnimation(WidthProperty, new DoubleAnimation(130, Duration3));
+                MinimizeButton.BeginAnimation(OpacityProperty, new DoubleAnimation(0, 1, Duration3));
+                MinimizeButton.BeginAnimation(HeightProperty, new DoubleAnimation(0, 25, Duration3));
+                MinimizeButton.BeginAnimation(WidthProperty, new DoubleAnimation(0, 25, Duration3));
             }
             else
             {
                 DetailTogglerRotate.BeginAnimation(RotateTransform.AngleProperty, new DoubleAnimation(0, Duration5));
-                //DefaultColorPicker.Size = ColorPickerButtonSize.Small;
+                ColorPickersPanel.BeginAnimation(OpacityProperty, new DoubleAnimation(1, 0, Duration4));
                 DetailPanel.BeginAnimation(OpacityProperty, new DoubleAnimation(1, 0, Duration4));
-                //PaletteGrip.BeginAnimation(WidthProperty, new DoubleAnimation(80, Duration3));
-                //MinimizeButton.BeginAnimation(OpacityProperty, new DoubleAnimation(1, 0, Duration3));
-                //MinimizeButton.BeginAnimation(HeightProperty, new DoubleAnimation(25, 0, Duration3));
+                PaletteGrip.BeginAnimation(WidthProperty, new DoubleAnimation(80, Duration3));
+                MinimizeButton.BeginAnimation(OpacityProperty, new DoubleAnimation(1, 0, Duration3));
+                MinimizeButton.BeginAnimation(HeightProperty, new DoubleAnimation(25, 0, Duration3));
+                MinimizeButton.BeginAnimation(WidthProperty, new DoubleAnimation(25, 0, Duration3));
             }
             _displayDetailPanel = v;
         }
@@ -587,11 +589,6 @@ namespace AntFu7.LiveDraw
                 EraseByPoint_Flag = (int)EraseMode.NONE;
                 EraserButton.ToolTip = "Toggle eraser mode (E)";
             }
-        }
-
-        private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            //SetBrushSize();
         }
 
         private void BrushSize(object sender, MouseWheelEventArgs e)

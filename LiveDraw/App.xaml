@@ -155,7 +155,7 @@
                 </Style.Triggers>
             </Style>
 
-            <Style x:Key="ColorPicker" TargetType="LiveDraw:ColorPicker">
+            <Style TargetType="LiveDraw:ColorPicker">
                 <Setter Property="Cursor" Value="Pen"/>
                 <Setter Property="Width" Value="{StaticResource ColorPickerSmall}"/>
                 <Setter Property="Height" Value="{Binding RelativeSource={RelativeSource Self},Path=Width}"/>
