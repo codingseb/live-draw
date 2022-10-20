@@ -27,6 +27,8 @@ namespace AntFu7.LiveDraw
 
         public string Color { get; set; } = "Black";
 
+        public int BrushIndex { get; set; } = 2;
+
         #region Json singleton
 
         private static readonly string fileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "LiveDraw", "Persist.json");

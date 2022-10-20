@@ -96,7 +96,7 @@ namespace AntFu7.LiveDraw
                 SetColor(Persistence.Instance.Color);
                 SetEnable(true);
                 SetDetailPanel(true);
-                SetBrushSize(_brushSizes[_brushIndex]);
+                SetBrushSize();
 
                 DetailPanel.Opacity = 0;
 
@@ -197,8 +197,8 @@ namespace AntFu7.LiveDraw
         private bool _displayDetailPanel;
         private bool _eraserMode;
         private bool _enable;
-        private readonly int[] _brushSizes = { 3, 5, 8, 13, 20 };
-        private int _brushIndex = 1;
+        private readonly int[] _brushSizes = { 1, 3, 5, 8, 13, 20 };
+        private int _brushIndex = Persistence.Instance.BrushIndex;
 
         private void SetDetailPanel(bool v)
         {
@@ -290,20 +290,29 @@ namespace AntFu7.LiveDraw
             _selectedColor = colorPicker;
         }
 
-        private void SetBrushSize(double s)
+        private void SetBrushSize()
         {
+            if (_brushIndex > _brushSizes.Length - 1)
+                _brushIndex = 0;
+            else if (_brushIndex < 0)
+                _brushIndex = _brushSizes.Length - 1;
+
+            Persistence.Instance.BrushIndex = _brushIndex;
+
+            double size = _brushSizes[_brushIndex];
+
             if (MainInkCanvas.EditingMode == InkCanvasEditingMode.EraseByPoint)
             {
                 MainInkCanvas.EditingMode = InkCanvasEditingMode.GestureOnly;
-                MainInkCanvas.EraserShape = new EllipseStylusShape(s, s);
+                MainInkCanvas.EraserShape = new EllipseStylusShape(size, size);
                 MainInkCanvas.EditingMode = InkCanvasEditingMode.EraseByPoint;
             }
             else
             {
-                MainInkCanvas.DefaultDrawingAttributes.Height = s;
-                MainInkCanvas.DefaultDrawingAttributes.Width = s;
-                brushPreview?.BeginAnimation(HeightProperty, new DoubleAnimation(s, Duration4));
-                brushPreview?.BeginAnimation(WidthProperty, new DoubleAnimation(s, Duration4));
+                MainInkCanvas.DefaultDrawingAttributes.Height = size;
+                MainInkCanvas.DefaultDrawingAttributes.Width = size;
+                brushPreview?.BeginAnimation(HeightProperty, new DoubleAnimation(size, Duration4));
+                brushPreview?.BeginAnimation(WidthProperty, new DoubleAnimation(size, Duration4));
             }
         }
 
@@ -605,7 +614,7 @@ namespace AntFu7.LiveDraw
 
         private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            //SetBrushSize(e.NewValue);
+            //SetBrushSize();
         }
 
         private void BrushSize(object sender, MouseWheelEventArgs e)
@@ -616,19 +625,13 @@ namespace AntFu7.LiveDraw
             else
                 _brushIndex++;
 
-            if (_brushIndex > _brushSizes.Length - 1)
-                _brushIndex = 0;
-            else if (_brushIndex < 0)
-                _brushIndex = _brushSizes.Length - 1;
-
-            SetBrushSize(_brushSizes[_brushIndex]);
+            SetBrushSize();
         }
 
         private void BrushSwitchButton_Click(object sender, RoutedEventArgs e)
         {
             _brushIndex++;
-            if (_brushIndex > _brushSizes.Length - 1) _brushIndex = 0;
-            SetBrushSize(_brushSizes[_brushIndex]);
+            SetBrushSize();
         }
 
         private void LineButton_Click(object sender, RoutedEventArgs e)
@@ -1113,15 +1116,11 @@ namespace AntFu7.LiveDraw
                 */
                 case Key.Add:
                     _brushIndex++;
-                    if (_brushIndex > _brushSizes.Length - 1)
-                        _brushIndex = 0;
-                    SetBrushSize(_brushSizes[_brushIndex]);
+                    SetBrushSize();
                     break;
                 case Key.Subtract:
                     _brushIndex--;
-                    if (_brushIndex < 0)
-                        _brushIndex = _brushSizes.Length - 1;
-                    SetBrushSize(_brushSizes[_brushIndex]);
+                    SetBrushSize();
                     break;
             }
         }
