@@ -34,5 +34,46 @@ namespace AntFu7.LiveDraw.Helpers
             }
             return null;
         }
+
+        public static T FindVisualDescendant<T>(this DependencyObject parent)
+            where T : DependencyObject
+        {
+            if (parent == null) return null;
+
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
+            {
+                var child = VisualTreeHelper.GetChild(parent, i);
+
+                var result = (child as T) ?? FindVisualDescendant<T>(child);
+                if (result != null) return result;
+            }
+            return null;
+        }
+
+        public static IEnumerable<T> FindAllVisualDescendants<T>(this DependencyObject parent, Predicate<T> predicate)
+            where T : DependencyObject
+        {
+            if (parent == null) yield return (T)Enumerable.Empty<T>();
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
+            {
+                var child = VisualTreeHelper.GetChild(parent, i);
+                if (child == null) continue;
+                if (child is T typedChild && predicate(typedChild)) yield return typedChild;
+                foreach (T childOfChild in FindAllVisualDescendants<T>(child, predicate)) yield return childOfChild;
+            }
+        }
+
+        public static IEnumerable<T> FindAllVisualDescendants<T>(this DependencyObject parent)
+            where T : DependencyObject
+        {
+            if (parent == null) yield return (T)Enumerable.Empty<T>();
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
+            {
+                var child = VisualTreeHelper.GetChild(parent, i);
+                if (child == null) continue;
+                if (child is T typedChild) yield return typedChild;
+                foreach (T childOfChild in FindAllVisualDescendants<T>(child)) yield return childOfChild;
+            }
+        }
     }
 }
