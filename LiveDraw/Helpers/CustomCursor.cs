@@ -54,7 +54,7 @@ namespace AntFu7.LiveDraw
 
         public static Cursor FromFrameworkElement(FrameworkElement visual, int hotSpotX, int hotSpotY)
         {
-            using (var temporaryPresentationSource = new HwndSource(new HwndSourceParameters()) { RootVisual = (VisualTreeHelper.GetParent(visual)==null ? visual : null) })
+            using (var temporaryPresentationSource = new HwndSource(new HwndSourceParameters()) { RootVisual = (VisualTreeHelper.GetParent(visual) == null ? visual : null) })
             {
                 visual.Dispatcher.Invoke(DispatcherPriority.SystemIdle, new Action(() => { }));
 

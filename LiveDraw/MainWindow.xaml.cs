@@ -1028,14 +1028,18 @@ namespace AntFu7.LiveDraw
             if (!_enable)
                 return;
 
-            if(e.Key >= Key.F1 && e.Key <= Key.F12)
+            Key key = e.Key == Key.System ? e.SystemKey : e.Key;
+
+            if (key >= Key.F1 && key <= Key.F12)
             {
                 try
                 {
                     SetColor(ColorPickersPanel
                         .FindAllVisualDescendants<ColorPicker>()
                         .ToList()
-                        .ElementAt(int.Parse(e.Key.ToString().Replace("F", "")) - 1));
+                        .ElementAt(int.Parse(key.ToString().Replace("F", "")) - 1));
+
+                    e.Handled = true;
                 }
                 catch { }
             }
