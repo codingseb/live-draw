@@ -191,6 +191,7 @@ namespace AntFu7.LiveDraw
 
         private void SetInkVisibility(bool v)
         {
+            DisableColorSelection();
             MainInkCanvas.BeginAnimation(OpacityProperty,
                 v ? new DoubleAnimation(0, 1, Duration3) : new DoubleAnimation(1, 0, Duration3));
             HideButton.IsActived = !v;
@@ -200,6 +201,7 @@ namespace AntFu7.LiveDraw
 
         private void SetEnable(bool b)
         {
+            DisableColorSelection();
             EnableButton.IsActived = !b;
             Background = Application.Current.Resources[b ? "FakeTransparent" : "TrueTransparent"] as Brush;
             _enable = b;
@@ -283,6 +285,7 @@ namespace AntFu7.LiveDraw
 
         private void SetEraserMode(bool v)
         {
+            DisableColorSelection();
             EraserButton.IsActived = v;
             _eraserMode = v;
             MainInkCanvas.UseCustomCursor = false;
@@ -1015,6 +1018,7 @@ namespace AntFu7.LiveDraw
             else if (e.Key == Key.P && e.KeyboardDevice.Modifiers == (ModifierKeys.Control | ModifierKeys.Shift))
             {
                 ResetPosition();
+                return;
             }
             else if (e.Key == Key.Escape)
             {
@@ -1031,6 +1035,9 @@ namespace AntFu7.LiveDraw
                     break;
                 case Key.Y:
                     Redo();
+                    break;
+                case Key.P:
+                    ColorSelection();
                     break;
                 case Key.E:
                     if (e.KeyboardDevice.Modifiers == ModifierKeys.Control)
@@ -1054,22 +1061,6 @@ namespace AntFu7.LiveDraw
                 case Key.Delete:
                     AnimatedClear();
                     break;
-
-                /*
-                case Key.D:
-                    if (EraseByPoint_Flag is ((int)erase_mode.NONE) or ((int)erase_mode.ERASER))
-                    {
-                        SetStaticInfo("Eraser Mode (Point)");
-                        MainInkCanvas.EditingMode = InkCanvasEditingMode.EraseByPoint;
-                        EraseByPoint_Flag = (int)erase_mode.ERASERBYPOINT;
-                    }
-                    else if (EraseByPoint_Flag == (int)erase_mode.ERASERBYPOINT)
-                    {
-                        MainInkCanvas.EditingMode = InkCanvasEditingMode.Ink;
-                        EraseByPoint_Flag = (int)erase_mode.NONE;
-                    }
-                    break;
-                */
                 case Key.Add:
                     _brushIndex++;
                     SetBrushSize();
@@ -1093,6 +1084,7 @@ namespace AntFu7.LiveDraw
         {
             if (_enable)
             {
+                DisableColorSelection();
                 Persistence.Instance.LineMode = lineMode;
                 if (lineMode)
                 {
@@ -1182,7 +1174,7 @@ namespace AntFu7.LiveDraw
 
         private void ColorSelector_Click(object sender, RoutedEventArgs e)
         {
-            ColorSelectionPanel.Visibility = Visibility.Visible;
+            ColorSelection();
         }
 
         private void ColorSelectionPanel_MouseDown(object sender, MouseButtonEventArgs e)
@@ -1199,8 +1191,20 @@ namespace AntFu7.LiveDraw
             catch { }
             finally
             {
-                ColorSelectionPanel.Visibility = Visibility.Collapsed;
+                DisableColorSelection();
             }
+        }
+
+        private void ColorSelection()
+        {
+            ColorSelectionPanel.Visibility = Visibility.Visible;
+            ColorSelectorButton.IsActived = true;
+        }
+
+        private void DisableColorSelection()
+        {
+            ColorSelectionPanel.Visibility = Visibility.Collapsed;
+            ColorSelectorButton.IsActived = false;
         }
 
         private void ColorSelectionPicker_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
