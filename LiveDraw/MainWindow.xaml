@@ -366,7 +366,9 @@
         <Border x:Name="ColorSelectionPanel" 
                 MouseDown="ColorSelectionPanel_MouseDown" 
                 Visibility="Collapsed" 
-                Cursor="Resources/pipette.cur"
-                Background="{StaticResource FakeTransparent}"/>
+                Background="{StaticResource FakeTransparent}"
+                Cursor="{Binding Source={StaticResource IconColorSelectorForCursor}, Converter={local:CustomCursor HotSpotY=16}}"
+                />
+                <!--Cursor="Resources/pipette.cur"-->
     </Grid>
 </Window>

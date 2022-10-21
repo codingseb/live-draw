@@ -11,14 +11,21 @@
                 <ResourceDictionary Source="IconDataDictionary.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
-            <!--<Path x:Key="IconColorSelectorForCursor" Data="{DynamicResource IconColorSelector}" Width="16" Height="16"/>-->
+            <Grid x:Key="IconColorSelectorForCursor" Width="16" Height="16" >
+                <Path Fill="Black"
+                      Data="{DynamicResource IconColorSelector}" 
+                      Stretch="Uniform" 
+                      Width="16" 
+                      Height="16"/>
+
+            </Grid>
 
             <Color x:Key="FakeTransparentColor" >#01000000</Color>
             <Color x:Key="TrueTransparentColor" >Transparent</Color>
             <Color x:Key="QuartertransparentGrayColor">#3F727272</Color>
             <Color x:Key="SemitransparentGrayColor">#7F727272</Color>
             <Color x:Key="TriquartertransparentGrayColor" >#3F727272</Color>
-            <Color x:Key="FunctionalButtonBackgroundColor" >#7F000000</Color>
+            <Color x:Key="FunctionalButtonBackgroundColor" >#7F000000</Color>   
             <Color x:Key="FunctionalButtonHoverColor" >#7F212121</Color>
             <Color x:Key="FunctionalButtonActiveColor" >#7F515151</Color>
 

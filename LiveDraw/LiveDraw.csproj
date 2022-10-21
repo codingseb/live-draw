@@ -20,9 +20,6 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
-    <None Remove="Resources\pipette.cur" />
-  </ItemGroup>
-  <ItemGroup>
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
@@ -34,7 +31,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Icon.ico" />
-    <Resource Include="Resources\pipette.cur" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Properties\Settings.Designer.cs">

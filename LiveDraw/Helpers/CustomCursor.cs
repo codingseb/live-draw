@@ -1,34 +1,48 @@
-﻿using System;
+﻿using Microsoft.Win32.SafeHandles;
+using System;
 using System.Globalization;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 
 namespace AntFu7.LiveDraw
 {
     public class CustomCursor : MarkupExtension, IValueConverter
     {
-        public Point HotSpot { get; set; } = new Point(0, 0);
+        public int HotSpotX { get; set; } = 0;
+        public int HotSpotY { get; set; } = 0;
+
         public Cursor DefaultCursor { get; set; } = Cursors.Arrow;
 
         public override object ProvideValue(IServiceProvider serviceProvider) => this;
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if(value is FrameworkElement frameworkElement)
+            if (value is FrameworkElement frameworkElement)
             {
-                frameworkElement.Measure(new Size(frameworkElement.Width, frameworkElement.Height));
-                frameworkElement.Arrange(new Rect(new Size(frameworkElement.Width, frameworkElement.Height)));
+                var container = new Border
+                {
+                    Child = frameworkElement,
+                    Background = Brushes.Transparent,
+                    BorderThickness = new Thickness(0),
+                };
 
-                return FromFrameworkElement(frameworkElement, HotSpot);
+                container.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+                container.Arrange(new Rect(container.DesiredSize));
+
+                return FromFrameworkElement(container, HotSpotX, HotSpotY);
             }
-            else if(value is System.Drawing.Bitmap bitmap)
+            else if (value is System.Drawing.Bitmap bitmap)
             {
-                return FromBitmap(bitmap, HotSpot);
+                return FromBitmap(bitmap, HotSpotX, HotSpotY);
             }
             else
             {
@@ -38,43 +52,59 @@ namespace AntFu7.LiveDraw
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => throw new NotImplementedException();
 
-        public static Cursor FromFrameworkElement(FrameworkElement visual, Point hotSpot)
+        public static Cursor FromFrameworkElement(FrameworkElement visual, int hotSpotX, int hotSpotY)
         {
-            int width = (int)visual.Width;
-            int height = (int)visual.Height;
-
-            // Render to a bitmap
-            var bitmapSource = new RenderTargetBitmap(width, height, 96, 96, PixelFormats.Pbgra32);
-            bitmapSource.Render(visual);
-
-            using (MemoryStream stream = new MemoryStream())
+            using (var temporaryPresentationSource = new HwndSource(new HwndSourceParameters()) { RootVisual = (VisualTreeHelper.GetParent(visual)==null ? visual : null) })
             {
-                BitmapEncoder enc = new BmpBitmapEncoder();
-                enc.Frames.Add(BitmapFrame.Create(bitmapSource));
-                enc.Save(stream);
+                visual.Dispatcher.Invoke(DispatcherPriority.SystemIdle, new Action(() => { }));
 
-                System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(stream);
+                int width = (int)visual.ActualWidth;
+                int height = (int)visual.ActualHeight;
 
-                return FromBitmap(bitmap, hotSpot);
+                // Render to a bitmap
+                var bitmapSource = new RenderTargetBitmap(width, height, 96, 96, PixelFormats.Pbgra32);
+                bitmapSource.Render(visual);
+
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    var enc = new PngBitmapEncoder();
+                    enc.Frames.Add(BitmapFrame.Create(bitmapSource));
+                    enc.Save(stream);
+
+                    System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(stream);
+
+                    return FromBitmap(bitmap, hotSpotX, hotSpotY);
+                }
             }
         }
 
-        public static Cursor FromBitmap(System.Drawing.Bitmap bitmap, Point hotSpot)
+        private struct IconInfo
         {
-            using (var stream = new MemoryStream())
-            {
-                System.Drawing.Icon.FromHandle(bitmap.GetHicon()).Save(stream);
+            public bool fIcon;
+            public int xHotspot;
+            public int yHotspot;
+            public IntPtr hbmMask;
+            public IntPtr hbmColor;
+        }
 
-                // Convert saved file into .cur format
-                stream.Seek(2, SeekOrigin.Begin);
-                stream.WriteByte(2);
-                stream.Seek(10, SeekOrigin.Begin);
-                stream.WriteByte((byte)(int)(hotSpot.X * bitmap.Width));
-                stream.WriteByte((byte)(int)(hotSpot.Y * bitmap.Height));
-                stream.Seek(0, SeekOrigin.Begin);
+        [DllImport("user32.dll")]
+        private static extern IntPtr CreateIconIndirect(ref IconInfo icon);
 
-                return new Cursor(stream);
-            }
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool GetIconInfo(IntPtr hIcon, ref IconInfo pIconInfo);
+
+        public static Cursor FromBitmap(System.Drawing.Bitmap bmp, int xHotSpot, int yHotSpot)
+        {
+            IconInfo tmp = new IconInfo();
+            GetIconInfo(bmp.GetHicon(), ref tmp);
+            tmp.xHotspot = xHotSpot;
+            tmp.yHotspot = yHotSpot;
+            tmp.fIcon = false;
+
+            IntPtr ptr = CreateIconIndirect(ref tmp);
+            SafeFileHandle handle = new SafeFileHandle(ptr, true);
+            return CursorInteropHelper.Create(handle);
         }
     }
 }
