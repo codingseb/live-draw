@@ -29,6 +29,8 @@ namespace AntFu7.LiveDraw
 
         public string Color { get; set; } = "Black";
 
+        public string ColorSelection { get; set; } = "White";
+
         public int BrushIndex { get; set; } = 2;
 
         #region Json singleton

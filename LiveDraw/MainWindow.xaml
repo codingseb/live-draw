@@ -235,7 +235,7 @@
                                         <RotateTransform CenterX="17.5" CenterY="17.5" Angle="{Binding MinWidth, ElementName=Palette}"/>
                                     </local:ColorPicker.RenderTransform>
                                 </local:ColorPicker>
-                                <local:ColorPicker x:Name="ColorSelectionPicker" Background="White" Click="ColorPickers_Click" PreviewMouseRightButtonDown="ColorSelectionPicker_PreviewMouseRightButtonDown">
+                                <local:ColorPicker x:Name="ColorSelectionPicker" Background="{Binding ColorSelection , Source={x:Static local:Persistence.Instance}, Converter={local:TextToBrushConverter}, Mode=TwoWay}" Click="ColorPickers_Click" PreviewMouseRightButtonDown="ColorSelectionPicker_PreviewMouseRightButtonDown" Cursor="Pen">
                                     <local:ColorPicker.RenderTransform>
                                         <RotateTransform CenterX="17.5" CenterY="17.5" Angle="{Binding MinWidth, ElementName=Palette}"/>
                                     </local:ColorPicker.RenderTransform>
