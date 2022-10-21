@@ -161,7 +161,7 @@ namespace AntFu7.LiveDraw
         private bool _displayDetailPanel;
         private bool _eraserMode;
         private bool _enable;
-        private readonly int[] _brushSizes = { 1, 3, 5, 8, 13, 20 };
+        private readonly int[] _brushSizes = { 1, 3, 5, 8, 13, 20, 30 };
         private int _brushIndex = Persistence.Instance.BrushIndex;
 
         private void SetDetailPanel(bool v)
