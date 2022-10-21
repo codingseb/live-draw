@@ -12,3 +12,4 @@ using System.Diagnostics.CodeAnalysis;
 [assembly: SuppressMessage("CodeQuality", "IDE0052:Supprimer les membres privés non lus", Justification = "<En attente>", Scope = "member", Target = "~F:AntFu7.LiveDraw.MainWindow.Duration2")]
 [assembly: SuppressMessage("CodeQuality", "IDE0052:Supprimer les membres privés non lus", Justification = "<En attente>", Scope = "member", Target = "~F:AntFu7.LiveDraw.MainWindow.Duration10")]
 [assembly: SuppressMessage("CodeQuality", "IDE0051:Supprimer les membres privés non utilisés", Justification = "<En attente>", Scope = "member", Target = "~M:AntFu7.LiveDraw.MainWindow.AwaitDocking")]
+[assembly: SuppressMessage("Style", "IDE0063:Utiliser une instruction 'using' simple", Justification = "<En attente>", Scope = "namespaceanddescendants", Target = "~N:AntFu7.LiveDraw")]

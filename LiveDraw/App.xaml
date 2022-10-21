@@ -11,6 +11,8 @@
                 <ResourceDictionary Source="IconDataDictionary.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
+            <!--<Path x:Key="IconColorSelectorForCursor" Data="{DynamicResource IconColorSelector}" Width="16" Height="16"/>-->
+
             <Color x:Key="FakeTransparentColor" >#01000000</Color>
             <Color x:Key="TrueTransparentColor" >Transparent</Color>
             <Color x:Key="QuartertransparentGrayColor">#3F727272</Color>
