@@ -10,7 +10,7 @@ namespace AntFu7.LiveDraw
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is SolidColorBrush brush && brush.Color.GetBrightness() > 0.9f)
+            if (value is SolidColorBrush brush && brush.Color.GetBrightness() > 0.8f)
             {
                 return Brushes.Black;
             }
