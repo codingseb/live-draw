@@ -72,6 +72,8 @@ namespace AntFu7.LiveDraw
                 MainInkCanvas.MouseLeftButtonUp += EndLine;
                 MainInkCanvas.MouseMove += MakeLine;
                 MainInkCanvas.MouseWheel += BrushSize;
+
+                ColorSelectionPanel.Cursor = CustomCursor.ConvertToCursor((FrameworkElement)Application.Current.Resources["ColorSelectPathForCursor"], new Point(0, 0));
             }
             else
             {

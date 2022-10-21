@@ -205,7 +205,7 @@
                                         <RotateTransform CenterX="17.5" CenterY="17.5" Angle="{Binding MinWidth, ElementName=Palette}"/>
                                     </local:ColorPicker.RenderTransform>
                                 </local:ColorPicker>
-                                <local:ColorPicker Background="{StaticResource PaintingColor10}" Click="ColorPickers_Click">
+                                <local:ColorPicker Background="{StaticResource PaintingColor10}" Click="ColorPickers_Click" Cursor="Pen">
                                     <local:ColorPicker.RenderTransform>
                                         <RotateTransform CenterX="17.5" CenterY="17.5" Angle="{Binding MinWidth, ElementName=Palette}"/>
                                     </local:ColorPicker.RenderTransform>
@@ -366,7 +366,6 @@
         <Border x:Name="ColorSelectionPanel" 
                 MouseDown="ColorSelectionPanel_MouseDown" 
                 Visibility="Collapsed" 
-                Cursor="UpArrow"
                 Background="{StaticResource FakeTransparent}"/>
     </Grid>
 </Window>
