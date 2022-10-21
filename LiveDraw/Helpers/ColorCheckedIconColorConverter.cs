@@ -12,7 +12,7 @@ namespace AntFu7.LiveDraw
         {
             if (value is SolidColorBrush brush && brush.Color.GetBrightness() > 0.9f)
             {
-                return Brushes.Gray;
+                return Brushes.Black;
             }
             else
             {
