@@ -191,11 +191,11 @@ namespace AntFu7.LiveDraw
 
         private void SetInkVisibility(bool v)
         {
-            //DisableColorSelection();
             MainInkCanvas.BeginAnimation(OpacityProperty,
                 v ? new DoubleAnimation(0, 1, Duration3) : new DoubleAnimation(1, 0, Duration3));
             HideButton.IsActived = !v;
-            SetEnable(v);
+            if (ColorSelectionPanel.Visibility == Visibility.Collapsed)
+                SetEnable(v);
             _inkVisibility = v;
         }
 

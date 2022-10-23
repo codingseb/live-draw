@@ -175,7 +175,7 @@
                                         <Setter Property="Orientation" Value="Horizontal"></Setter>
                                     </Style>
                                 </WrapPanel.Resources>
-                                <local:ColorPicker Background="{StaticResource PaintingColor6}" Click="ColorPickers_Click">
+                                <local:ColorPicker Background="{StaticResource PaintingColor6}" Click="ColorPickers_Click" ToolTip="[F1]">
                                     <local:ColorPicker.RenderTransform>
                                         <RotateTransform CenterX="17.5" CenterY="17.5" Angle="{Binding MinWidth, ElementName=Palette}"/>
                                     </local:ColorPicker.RenderTransform>
