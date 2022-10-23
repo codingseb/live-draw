@@ -367,7 +367,7 @@
                 MouseDown="ColorSelectionPanel_MouseDown" 
                 Visibility="Collapsed" 
                 Background="{StaticResource FakeTransparent}"
-                Cursor="None"
+                Cursor="{Binding Source={StaticResource IconColorSelectorForCursor}, Converter={local:CustomCursor HotSpotY=16}}"
                 />
 
     </Grid>

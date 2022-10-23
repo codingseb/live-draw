@@ -191,7 +191,7 @@ namespace AntFu7.LiveDraw
 
         private void SetInkVisibility(bool v)
         {
-            DisableColorSelection();
+            //DisableColorSelection();
             MainInkCanvas.BeginAnimation(OpacityProperty,
                 v ? new DoubleAnimation(0, 1, Duration3) : new DoubleAnimation(1, 0, Duration3));
             HideButton.IsActived = !v;
@@ -1015,6 +1015,10 @@ namespace AntFu7.LiveDraw
             {
                 SetEnable(!_enable);
             }
+            else if (e.Key == Key.H)
+            {
+                SetInkVisibility(!_inkVisibility);
+            }
             else if (e.Key == Key.P && e.KeyboardDevice.Modifiers == (ModifierKeys.Control | ModifierKeys.Shift))
             {
                 ResetPosition();
@@ -1030,7 +1034,7 @@ namespace AntFu7.LiveDraw
 
             Key key = e.Key == Key.System ? e.SystemKey : e.Key;
 
-            if (key >= Key.F1 && key <= Key.F12)
+            if (key >= Key.F1 && key <= Key.F12 && e.KeyboardDevice.Modifiers == ModifierKeys.None)
             {
                 try
                 {
@@ -1070,9 +1074,6 @@ namespace AntFu7.LiveDraw
                     break;
                 case Key.L:
                     LineMode(!Persistence.Instance.LineMode);
-                    break;
-                case Key.H:
-                    SetInkVisibility(!_inkVisibility);
                     break;
                 case Key.Delete:
                     AnimatedClear();
@@ -1213,8 +1214,16 @@ namespace AntFu7.LiveDraw
 
         private void ColorSelection()
         {
-            ColorSelectionPanel.Visibility = Visibility.Visible;
-            ColorSelectorButton.IsActived = true;
+            if (ColorSelectionPanel.Visibility == Visibility.Collapsed)
+            {
+                SetColor(ColorSelectionPicker);
+                ColorSelectionPanel.Visibility = Visibility.Visible;
+                ColorSelectorButton.IsActived = true;
+            }
+            else
+            {
+                DisableColorSelection();
+            }
         }
 
         private void DisableColorSelection()
