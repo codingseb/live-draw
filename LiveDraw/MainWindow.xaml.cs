@@ -72,6 +72,15 @@ namespace AntFu7.LiveDraw
                 MainInkCanvas.MouseLeftButtonUp += EndLine;
                 MainInkCanvas.MouseMove += MakeLine;
                 MainInkCanvas.MouseWheel += BrushSize;
+
+                List<ColorPicker> colorPickers = ColorPickersPanel
+                        .FindAllVisualDescendants<ColorPicker>()
+                        .ToList();
+
+                for (int i = 1; i <= 12; i++)
+                {
+                    colorPickers[i - 1].ToolTip = $"[F{i}]";
+                }
             }
             else
             {

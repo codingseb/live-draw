@@ -11,12 +11,12 @@
                 <ResourceDictionary Source="IconDataDictionary.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
-            <Grid x:Key="IconColorSelectorForCursor" Width="16" Height="16" >
+            <Grid x:Key="IconColorSelectorForCursor" Width="24" Height="24" >
                 <Path Fill="Black"
                       Data="{DynamicResource IconColorSelector}" 
                       Stretch="Uniform" 
-                      Width="16" 
-                      Height="16"/>
+                      Width="24" 
+                      Height="24"/>
 
             </Grid>
 
