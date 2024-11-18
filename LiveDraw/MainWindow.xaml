@@ -260,7 +260,10 @@
                                         <Setter Property="Height" Value="32"/>
                                     </Style>
                                 </WrapPanel.Resources>
-                                <local:ActivableButton x:Name="BrushSwitchButton" Click="BrushSwitchButton_Click" ToolTip="Preview">
+                                <local:ActivableButton x:Name="BrushSwitchButton" 
+                                                       Click="BrushSwitchButton_Click" 
+                                                       MouseRightButtonUp="BrushSwitchButton_MouseRightButtonUp"
+                                                       ToolTip="Preview">
                                     <Border x:Name="brushPreview" Width="5" Height="5" Background="#FFD6D6D6" CornerRadius="10"  HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                 </local:ActivableButton>
                                 <local:ActivableButton x:Name="LineButton" ToolTip="Line Mode [L]" Click="LineButton_Click">

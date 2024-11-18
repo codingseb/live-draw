@@ -606,6 +606,12 @@ namespace AntFu7.LiveDraw
             SetBrushSize();
         }
 
+        private void BrushSwitchButton_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            _brushIndex--;
+            SetBrushSize();
+        }
+
         private void LineButton_Click(object sender, RoutedEventArgs e)
         {
             LineMode(!Persistence.Instance.LineMode);
